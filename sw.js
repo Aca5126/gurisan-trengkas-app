@@ -1,5 +1,5 @@
-const CACHE_NAME = 'trengkas-cache-v1';
-const urlsToCache = [
+const CACHE = 'trengkas-pwa-v1';
+const ASSETS = [
   './',
   './index.html',
   './style.css',
@@ -7,29 +7,29 @@ const urlsToCache = [
   './manifest.webmanifest'
 ];
 
-// Install: cache fail asas
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-  );
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(ASSETS)));
 });
 
-// Activate: buang cache lama
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      )
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.map((k) => (k !== CACHE ? caches.delete(k) : null)))
     )
   );
 });
 
-// Fetch: cache-first fallback network
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(response =>
-      response || fetch(event.request)
+self.addEventListener('fetch', (e) => {
+  const { request } = e;
+  if (request.method !== 'GET') return;
+  e.respondWith(
+    caches.match(request).then((cached) =>
+      cached ||
+      fetch(request).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(request, copy)).catch(() => {});
+        return res;
+      }).catch(() => cached || new Response('Offline', { status: 503 }))
     )
   );
 });
