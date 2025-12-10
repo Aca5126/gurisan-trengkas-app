@@ -51,7 +51,7 @@ canvas.addEventListener('pointerleave', endDraw);
 
 // --- Garisan panduan kelabu gelap ---
 function drawGuideLine() {
-  ctx.strokeStyle = '#555555'; // kelabu gelap
+  ctx.strokeStyle = '#555555';
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(0, canvas.height/2);
@@ -84,7 +84,7 @@ penBtn.addEventListener('click', () => setTool('pen'));
 eraserBtn.addEventListener('click', () => setTool('eraser'));
 setTool('pen');
 
-// Clear canvas (garisan panduan muncul semula)
+// Clear canvas
 clearBtn.addEventListener('click', () => {
   ctx.clearRect(0,0,canvas.width,canvas.height);
   phonemesEl.textContent = '-';
@@ -92,10 +92,9 @@ clearBtn.addEventListener('click', () => {
   bestWordEl.textContent = '-';
   confidenceEl.textContent = '-';
   confBar.style.width = '0%';
-  drawGuideLine(); // lukis semula baseline
+  drawGuideLine();
 });
 
-// Muat turun lukisan
+// Download lukisan
 downloadBtn.addEventListener('click', () => {
-  canvas.toBlob(blob => {
-    const url = URL.createObjectURL(blob
+  canvas.to
