@@ -1,52 +1,101 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Trengkas Pitman — Sahkan Gurisan</title>
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Trengkas Recognition App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    canvas {
+      border: 1px solid #000;
+      margin-top: 10px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+    }
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>Trengkas Pitman — Sahkan Gurisan</h1>
-  </header>
+  <h1>Aplikasi Gurisan Trengkas by Aziawati Ahmad Azizi</h1>
 
-  <main>
-    <section class="toolbar">
-      <button id="penBtn" class="active">Pen</button>
-      <button id="eraserBtn">Eraser</button>
-      <button id="clearBtn">Clear + Baseline</button>
-      <button id="downloadBtn">Download PNG</button>
-      <button id="confirmBtn">Sahkan</button>
-    </section>
+  <!-- Kanvas untuk lukisan -->
+  <canvas id="canvas" width="400" height="200"></canvas><br>
 
-    <section class="canvas-wrap">
-      <canvas id="pad" width="900" height="500" aria-label="Pad lukisan trengkas"></canvas>
-      <p class="hint">Lukis trengkas anda di kanvas. Gunakan “Sahkan” untuk terjemahan.</p>
-    </section>
+  <!-- Butang kawalan -->
+  <button id="penBtn">Pen</button>
+  <button id="eraserBtn">Eraser</button>
+  <button id="clearBtn">Clear</button>
+  <button id="downloadBtn">Download</button>
+  <button id="verifyBtn">Sahkan</button>
 
-    <section class="result">
-      <h2>Hasil Terjemahan</h2>
-      <pre id="resultText" aria-live="polite"></pre>
-    </section>
-  </main>
+  <!-- Output -->
+  <div id="output">Terjemahan akan muncul di sini...</div>
 
-  <footer>
-    <small>Versi PWA — berfungsi offline untuk antaramuka. Terjemahan memerlukan sambungan internet ke backend.</small>
-  </footer>
-
-  <!-- Set API_BASE to your Railway backend URL -->
   <script>
-    // Tukar nilai ini kepada URL Railway anda selepas deploy.
-    // Contoh: 'https://trengkas-backend.up.railway.app'
+    // URL backend Render
     window.API_BASE = 'https://gurisan-trengkas-backend.onrender.com';
-  </script>
-  <script src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(() => {});
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let erasing = false;
+
+    // Tetapan asas
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#000';
+
+    // Event mouse
+    canvas.addEventListener('mousedown', () => { drawing = true; ctx.beginPath(); });
+    canvas.addEventListener('mouseup', () => { drawing = false; });
+    canvas.addEventListener('mousemove', draw);
+
+    function draw(e) {
+      if (!drawing) return;
+      ctx.lineWidth = erasing ? 10 : 2;
+      ctx.strokeStyle = erasing ? '#fff' : '#000';
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
     }
+
+    // Butang kawalan
+    document.getElementById('penBtn').onclick = () => { erasing = false; };
+    document.getElementById('eraserBtn').onclick = () => { erasing = true; };
+    document.getElementById('clearBtn').onclick = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+    };
+    document.getElementById('downloadBtn').onclick = () => {
+      const link = document.createElement('a');
+      link.download = 'gurisan.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    };
+
+    // Fungsi sahkan → hantar imej ke backend
+    document.getElementById('verifyBtn').onclick = async () => {
+      const imageBase64 = canvas.toDataURL().split(',')[1];
+      document.getElementById('output').innerText = 'Sedang proses...';
+
+      try {
+        const res = await fetch(`${window.API_BASE}/api/translate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64 })
+        });
+        const data = await res.json();
+        document.getElementById('output').innerText = data.translation || data.error;
+      } catch (err) {
+        document.getElementById('output').innerText = 'Ralat sambungan ke backend.';
+      }
+    };
   </script>
 </body>
 </html>
