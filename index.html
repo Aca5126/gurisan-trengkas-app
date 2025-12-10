@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
   <script>
+    // Tetapkan URL backend anda di sini
     window.API_BASE = 'https://gurisan-trengkas-backend.onrender.com';
   </script>
 </head>
@@ -32,11 +33,13 @@
   <main class="layout">
     <section class="panel">
       <h2>Perkataan sasaran (Latihan)</h2>
+
       <div class="modes">
         <label><input type="radio" name="mode" value="bebas" checked /> Bebas</label>
         <label><input type="radio" name="mode" value="rawak" /> Rawak</label>
         <label><input type="radio" name="mode" value="ditetapkan" /> Ditetapkan</label>
       </div>
+
       <div class="target-row">
         <input id="perkataan" placeholder="Contoh: lusa, buku, rumah..." />
         <button id="pilihRawakBtn" class="secondary">Pilih Rawak</button>
