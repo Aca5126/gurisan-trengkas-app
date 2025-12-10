@@ -125,18 +125,37 @@ muatTurunBtn.addEventListener('click', () => {
 });
 
 // Mod latihan
-document.querySelectorAll('input[name="mode"]').forEach(r => {
-  r.addEventListener('change', (e) => {
-    const v = e.target.value;
-    pilihRawakBtn.disabled = v !== 'rawak';
-    senaraiDitETapkan.disabled = v !== 'ditetapkan';
-    perkataanInput.disabled = v !== 'bebas';
+document.querySelectorAll('input[name="mode"]').forEach(radio => {
+  radio.addEventListener('change', (e) => {
+    const mode = e.target.value;
+
+    if (mode === 'bebas') {
+      perkataanInput.disabled = false;
+      pilihRawakBtn.disabled = true;
+      senaraiDitETapkan.disabled = true;
+    }
+
+    if (mode === 'rawak') {
+      perkataanInput.disabled = false;
+      pilihRawakBtn.disabled = false;
+      senaraiDitETapkan.disabled = true;
+    }
+
+    if (mode === 'ditetapkan') {
+      perkataanInput.disabled = false;
+      pilihRawakBtn.disabled = true;
+      senaraiDitETapkan.disabled = false;
+    }
   });
 });
+
+// Pilih rawak
 pilihRawakBtn.addEventListener('click', () => {
   const idx = Math.floor(Math.random() * window.WORDS.length);
   perkataanInput.value = window.WORDS[idx];
 });
+
+// Pilih ditetapkan
 senaraiDitETapkan.addEventListener('change', (e) => {
   perkataanInput.value = e.target.value;
 });
@@ -168,10 +187,4 @@ function getStats() {
 function setStats(s) {
   localStorage.setItem('betul', s.betul);
   localStorage.setItem('salah', s.salah);
-  localStorage.setItem('attempts', s.attempts);
-}
-function updatePrestasi(betul) {
-  const s = getStats();
-  s.attempts += 1;
-  if (betul) s.betul += 1; else s.salah += 1;
-  setStats(s);
+  localStorage.setItem('attempt
