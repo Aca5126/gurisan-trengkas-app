@@ -39,8 +39,8 @@
       </div>
       <div class="target-row">
         <input id="perkataan" placeholder="Contoh: lusa, buku, rumah..." />
-        <button id="pilihRawakBtn" class="secondary" disabled>Pilih Rawak</button>
-        <select id="senaraiDitETapkan" disabled></select>
+        <button id="pilihRawakBtn" class="secondary">Pilih Rawak</button>
+        <select id="senaraiDitETapkan"></select>
       </div>
 
       <div class="canvas-toolbar">
@@ -55,10 +55,11 @@
       </div>
 
       <div class="canvas-wrap">
+        <canvas id="guidesCanvas" width="800" height="300"></canvas>
+        <canvas id="canvas" width="800" height="300"></canvas>
         <span id="labelAtas" class="guide-label">Atas</span>
         <span id="labelBaseline" class="guide-label baseline">Baseline</span>
         <span id="labelBawah" class="guide-label">Bawah</span>
-        <canvas id="canvas" width="800" height="300"></canvas>
       </div>
 
       <div class="canvas-actions">
