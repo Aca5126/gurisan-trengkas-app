@@ -175,4 +175,3 @@ function updatePrestasi(betul) {
   s.attempts += 1;
   if (betul) s.betul += 1; else s.salah += 1;
   setStats(s);
-  const total = s.betul + s.salah;
