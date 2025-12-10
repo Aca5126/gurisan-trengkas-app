@@ -1,35 +1,29 @@
+// server.js
 const express = require('express');
 const cors = require('cors');
-const helmet = require('helmet');
+const bodyParser = require('body-parser');
+require('dotenv').config();
 
-require('dotenv').config(); // Berfungsi jika lokal; di Railway gunakan Variables
-
-const translateRoutes = require('./src/routes/translate');
+const translateRoute = require('./src/routes/translate');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-const ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 
-app.use(helmet());
-app.use(express.json({ limit: '10mb' }));
-
+// Middleware
 app.use(cors({
-  origin: ORIGIN === '*' ? true : ORIGIN,
-  methods: ['POST', 'GET'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: process.env.ALLOWED_ORIGIN || '*'
 }));
+app.use(bodyParser.json({ limit: '10mb' }));
 
+// Health check
 app.get('/health', (req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
 });
 
-app.use('/api/translate', translateRoutes);
+// Routes
+app.use('/api/translate', translateRoute);
 
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Server error' });
-});
-
+// Start server
 app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
