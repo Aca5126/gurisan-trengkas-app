@@ -46,6 +46,14 @@
 
   <footer><small>Berfungsi offline jika dipasang ke skrin utama. Data hanya di peranti anda.</small></footer>
 
+  <script>
+    // Daftar service worker (PWA)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
