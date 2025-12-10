@@ -11,18 +11,19 @@
 <body>
   <header>
     <h1>Gurisan Trengkas → Perkataan</h1>
-    <p class="subtitle">Lukis pada canvas, tekan Sahkan, lihat terjemahan & peratusan</p>
+    <p class="subtitle">Lukis pada canvas, tekan Sahkan, lihat terjemahan & keyakinan</p>
   </header>
 
   <main>
     <section class="controls">
       <input id="targetWord" type="text" placeholder="Perkataan sasaran (optional)" aria-label="Perkataan sasaran" />
       <div class="buttons">
+        <!-- Teks butang ditukar kepada Sahkan -->
         <button id="recognizeBtn">Sahkan</button>
         <button id="clearBtn">Clear</button>
         <button id="exportCsvBtn">Export CSV</button>
         <button id="penBtn">Pen</button>
-        <button id="eraserBtn">Padam</button>
+        <button id="eraserBtn">Eraser</button>
         <button id="downloadBtn">Muat Turun</button>
       </div>
     </section>
@@ -36,4 +37,27 @@
       <div class="row"><strong>Simbol:</strong><span id="phonemes">-</span></div>
       <div class="row"><strong>Calon kata:</strong><span id="candidates">-</span></div>
       <div class="row"><strong>Hasil terbaik:</strong><span id="bestWord">-</span></div>
-      <div class="row"><strong>Peratusan:</strong><span id="confidence">-</span></div
+      <div class="row"><strong>Keyakinan:</strong><span id="confidence">-</span></div>
+      <div class="conf-bar"><span></span></div>
+    </section>
+
+    <h2>Panduan Trengkas (Pitman BM 2000)</h2>
+    <div id="guide" class="card"></div>
+  </main>
+
+  <footer><small>Berfungsi offline jika dipasang ke skrin utama. Data hanya di peranti anda.</small></footer>
+
+  <script>
+    // Tetapkan URL backend (ubah ikut hosting anda)
+    window.API_BASE = 'http://localhost:8080';
+
+    // Daftar service worker (PWA)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
