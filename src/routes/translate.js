@@ -1,24 +1,19 @@
+// src/routes/translate.js
 const express = require('express');
 const router = express.Router();
-const { translateImageWithOpenAI } = require('../services/openai');
+const { recognizeAndTranslate } = require('../services/openai');
 
-// POST /api/translate
-// Body: { image: "data:image/png;base64,....", guidance?: "string" }
 router.post('/', async (req, res) => {
   try {
-    const { image, guidance } = req.body || {};
-    if (!image || typeof image !== 'string' || !image.startsWith('data:image')) {
-      return res.status(400).json({ error: 'Imej tidak sah. Pastikan format data URL base64.' });
+    const { imageBase64 } = req.body;
+    if (!imageBase64) {
+      return res.status(400).json({ error: 'Image data required' });
     }
 
-    const translation = await translateImageWithOpenAI({
-      imageDataUrl: image,
-      guidanceText: guidance
-    });
-
-    res.json({ translation });
+    const result = await recognizeAndTranslate(imageBase64);
+    res.json({ translation: result });
   } catch (err) {
-    console.error('Translation error:', err?.response?.data || err.message || err);
+    console.error('Error in /api/translate:', err.message);
     res.status(500).json({ error: 'Translation failed' });
   }
 });
