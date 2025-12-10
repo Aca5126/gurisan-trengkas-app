@@ -18,7 +18,7 @@ function applyTool() {
     ctx.strokeStyle = penColor;
     ctx.lineWidth = penWidth;
   } else {
-    ctx.globalCompositeOperation = 'destination-out';
+    ctx.globalCompositeOperation = 'destination-out'; // padam piksel yang dilukis
     ctx.strokeStyle = 'rgba(0,0,0,1)';
     ctx.lineWidth = eraserWidth;
   }
@@ -66,8 +66,8 @@ canvas.addEventListener('touchend', endDraw);
 // ----- Garisan panduan (baseline) -----
 function drawGuideLine() {
   ctx.save();
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.strokeStyle = '#555555';
+  ctx.globalCompositeOperation = 'source-over'; // pastikan garis tidak terpadam oleh mode eraser
+  ctx.strokeStyle = '#555555'; // kelabu gelap
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(0, canvas.height / 2);
@@ -76,6 +76,7 @@ function drawGuideLine() {
   ctx.restore();
 }
 
+// Lukis baseline pada permulaan
 window.addEventListener('load', () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGuideLine();
@@ -113,7 +114,7 @@ clearBtn.addEventListener('click', () => {
   bestWordEl.textContent = '-';
   confidenceEl.textContent = '-';
   confBar.style.width = '0%';
-  drawGuideLine();
+  drawGuideLine(); // lukis semula baseline
 });
 
 // ----- Muat turun lukisan -----
