@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { recognizeAndTranslate } = require('../services/openai');
 
+// POST /api/translate
 router.post('/', async (req, res) => {
   try {
     const { imageBase64 } = req.body;
