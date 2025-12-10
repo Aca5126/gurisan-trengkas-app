@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+  <title>Gurisan Trengkas → Perkataan</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#3f51b5" />
+</head>
+<body>
+  <header>
+    <h1>Gurisan Trengkas → Perkataan</h1>
+    <p class="subtitle">Lukis pada canvas, tekan Kenali, lihat fonem & calon kata</p>
+  </header>
+  <main>
+    <section class="controls">
+      <input id="targetWord" type="text" placeholder="Perkataan sasaran (opsyenal)" />
+      <div class="buttons">
+        <button id="recognizeBtn">Kenali</button>
+        <button id="clearBtn">Clear</button>
+        <button id="exportCsvBtn">Export CSV</button>
+      </div>
+    </section>
+    <section>
+      <canvas id="canvas" width="360" height="520"></canvas>
+      <div class="help">Tip: Garis panjang ke kanan ≈ “bu”, pendek ke kanan ≈ “ku”, pendek ke bawah ≈ “ba”.</div>
+    </section>
+    <section class="card">
+      <div class="row"><strong>Fonem:</strong><span id="phonemes">-</span></div>
+      <div class="row"><strong>Calon kata:</strong><span id="candidates">-</span></div>
+      <div class="row"><strong>Hasil terbaik:</strong><span id="bestWord">-</span></div>
+      <div class="row"><strong>Keyakinan:</strong><span id="confidence">-</span></div>
+    </section>
+    <h2>Sejarah</h2>
+    <ul id="historyList"></ul>
+  </main>
+  <footer><small>Berfungsi offline jika disimpan ke Home Screen. Data hanya di peranti anda.</small></footer>
+  <script src="app.js"></script>
+</body>
+</html>
