@@ -6,14 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css" />
   <script>
-    // URL backend kekal
     window.API_BASE = 'https://gurisan-trengkas-backend.onrender.com';
   </script>
 </head>
 <body>
   <header class="header">
     <div class="brand">
-      <div class="logo" aria-hidden="true">🎓</div>
+      <div class="logo">🎓</div>
       <div>
         <h1>Latihan Gurisan Trengkas</h1>
         <p class="subtitle">Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.</p>
@@ -33,44 +32,33 @@
   <main class="layout">
     <section class="panel">
       <h2>Perkataan sasaran (Latihan)</h2>
-      <p class="hint">Contoh: lusa, buku, rumah...</p>
-
       <div class="modes">
         <label><input type="radio" name="mode" value="bebas" checked /> Bebas</label>
         <label><input type="radio" name="mode" value="rawak" /> Rawak</label>
         <label><input type="radio" name="mode" value="ditetapkan" /> Ditetapkan</label>
       </div>
-
       <div class="target-row">
-        <input id="perkataan" placeholder="Contoh: lusa, buku, rumah..." aria-label="Perkataan sasaran" />
+        <input id="perkataan" placeholder="Contoh: lusa, buku, rumah..." />
         <button id="pilihRawakBtn" class="secondary" disabled>Pilih Rawak</button>
-        <select id="senaraiDitETapkan" title="Senarai ditetapkan" disabled></select>
+        <select id="senaraiDitETapkan" disabled></select>
       </div>
-
-      <p class="small">Masukkan perkataan yang anda ingin guris, kemudian lukis gurisan trengkas di bawah.</p>
 
       <div class="canvas-toolbar">
         <button id="penBtn" class="primary">Pen</button>
         <button id="padamBtn" class="secondary">Padam</button>
-        <span class="sep"></span>
-        <label class="checkbox"><input type="checkbox" id="toggleGuides" checked /> Garis panduan</label>
-        <label class="checkbox"><input type="checkbox" id="toggleBaseline" checked /> Baseline</label>
-        <label>
-          Saiz gurisan:
-          <select id="saizGurisan">
-            <option value="normal" selected>Biasa (0.5 cm)</option>
-            <option value="separuh">Separuh (0.25 cm)</option>
-          </select>
-        </label>
+        <label><input type="checkbox" id="toggleGuides" checked /> Garis panduan</label>
+        <label><input type="checkbox" id="toggleBaseline" checked /> Baseline</label>
+        <select id="saizGurisan">
+          <option value="normal">Biasa (0.5 cm)</option>
+          <option value="separuh">Separuh (0.25 cm)</option>
+        </select>
       </div>
 
       <div class="canvas-wrap">
-        <div class="guide-labels">
-          <span id="labelAtas" class="guide-label">Atas</span>
-          <span id="labelBaseline" class="guide-label baseline">Baseline</span>
-          <span id="labelBawah" class="guide-label">Bawah</span>
-        </div>
-        <canvas id="canvas" width="800" height="300" aria-label="Kanvas gurisan"></canvas>
+        <span id="labelAtas" class="guide-label">Atas</span>
+        <span id="labelBaseline" class="guide-label baseline">Baseline</span>
+        <span id="labelBawah" class="guide-label">Bawah</span>
+        <canvas id="canvas" width="800" height="300"></canvas>
       </div>
 
       <div class="canvas-actions">
@@ -86,71 +74,19 @@
     </section>
 
     <section class="panel">
-      <h2>Rekod prestasi</h2>
-      <div class="stats">
-        <div class="stat"><span class="label">Betul:</span> <span id="betul">0</span></div>
-        <div class="stat"><span class="label">Salah:</span> <span id="salah">0</span></div>
-        <div class="stat"><span class="label">Kadar Kejayaan:</span> <span id="kejayaan">0%</span></div>
-        <div class="stat"><span class="label">Tahap Kemahiran:</span> <span id="tahap">Pemula</span></div>
+      <h2>Rekod Prestasi</h2>
+      <div class="stats-grid">
+        <div class="stat green"><h3>✅ Betul</h3><p id="betul">0</p><small>Cubaan berjaya</small></div>
+        <div class="stat red"><h3>❌ Salah</h3><p id="salah">0</p><small>Perlu penambahbaikan</small></div>
+        <div class="stat blue"><h3>📈 Kadar Kejayaan</h3><p id="kejayaan">0%</p><small>0 cubaan keseluruhan</small></div>
+        <div class="stat purple"><h3>🎯 Purata Ketepatan</h3><p id="ketepatan">0%</p><small>Ketepatan gurisan anda</small></div>
+        <div class="stat yellow"><h3>⭐ Tahap Kemahiran</h3><p id="tahap">Pemula</p><small>Jangan putus asa! Latihan membawa kejayaan.</small></div>
       </div>
-
-      <h3>Panduan trengkas Pitman 2000 (Malaysia)</h3>
-      <p>Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan. Setiap jenis gurisan mewakili kumpulan bunyi tertentu.</p>
-
-      <div class="guide-grid">
-        <div class="guide">
-          <h4>Gurisan ke bawah</h4>
-          <p>t, d, p, b</p>
-          <div class="guide-lines">
-            <div class="dash"></div>
-            <div class="base thick"></div>
-            <div class="dash"></div>
-          </div>
-        </div>
-        <div class="guide">
-          <h4>Gurisan melintang</h4>
-          <p>k, g, s, z</p>
-          <div class="guide-lines horizontal">
-            <div class="dash"></div>
-            <div class="base thick"></div>
-            <div class="dash"></div>
-          </div>
-        </div>
-        <div class="guide">
-          <h4>Gurisan ke atas</h4>
-          <p>l, r, m, n</p>
-          <div class="guide-lines up">
-            <div class="dash"></div>
-            <div class="base thick"></div>
-            <div class="dash"></div>
-          </div>
-        </div>
-        <div class="guide">
-          <h4>Gurisan lengkung</h4>
-          <p>f, v, th</p>
-          <div class="guide-lines curve">
-            <div class="dash"></div>
-            <div class="base thick"></div>
-            <div class="dash"></div>
-          </div>
-        </div>
-      </div>
-
-      <details class="mt">
-        <summary>Saiz gurisan</summary>
-        <p>Biasa: 0.5 cm | Separuh: 0.25 cm</p>
-      </details>
-
-      <details>
-        <summary>Contoh latihan (300 perkataan)</summary>
-        <p>Pilih “Rawak” atau “Ditetapkan” untuk menggunakan senarai 300 perkataan asas latihan.</p>
-        <ul id="contohList" class="contoh-list"></ul>
-      </details>
     </section>
   </main>
 
   <footer class="footer">
-    <p>&copy; 2025 Latihan Trengkas — Fokus pada aksesibiliti dan pembelajaran autentik.</p>
+    <p>&copy; 2025 Latihan Trengkas</p>
   </footer>
 
   <script src="words.js"></script>
