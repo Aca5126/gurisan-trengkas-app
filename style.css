@@ -7,7 +7,15 @@
   --card:#fff;
 }
 
-body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text);}
+* { box-sizing: border-box; }
+
+body {
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
 header { background:var(--primary); color:#fff; padding:16px;}
 h1 { margin:0; font-size:20px;}
 .subtitle { margin:8px 0 0; opacity:.9;}
@@ -22,7 +30,9 @@ button {
   padding:10px; border:none; border-radius:6px;
   background:var(--primary); color:#fff; font-weight:600;
   cursor:pointer;
+  transition: filter .2s ease;
 }
+button:hover { filter: brightness(1.05); }
 button#clearBtn { background:#9e9e9e;}
 button#exportCsvBtn { background:#2e7d32;}
 button#penBtn, button#eraserBtn { background:#9e9e9e;}
@@ -30,7 +40,7 @@ button#penBtn.active, button#eraserBtn.active { background: var(--primary); }
 button#downloadBtn { background:#006064; }
 
 #canvas {
-  background:#fff;
+  background:#fff; /* pastikan latar putih */
   width:100%; height:auto;
   border:1px solid #ccc; border-radius:8px;
   touch-action:none; display:block; margin-bottom:8px;
