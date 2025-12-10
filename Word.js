@@ -1,4 +1,4 @@
-// 300 perkataan asas latihan (gabungan kata umum dan berguna untuk latihan gurisan)
+// 300 perkataan asas latihan (gabungan kata umum untuk latihan gurisan)
 window.WORDS = [
   "buku","rumah","lusa","kamu","saya","dia","kita","mereka","hari","malam",
   "pagi","petang","sekolah","kelas","guru","murid","belajar","tulis","baca","dengar",
@@ -15,28 +15,28 @@ window.WORDS = [
   "hantar","pos","telefon","mesej","emel","internet","laman web","kata laluan","akaun","log masuk",
   "daftar","keluar","masuk","pilih","tutup","buka","cari","jumpa","tunggu","lihat",
   "tonton","gambar","video","suara","muzik","lagu","main","berhenti","mula","tamat",
-  "naik","turun","masuk","keluar","kanan","kiri","depan","belakang","atas","bawah",
-  "besar","kecil","panjang","pendek","tebal","nipis","ringan","berat","penuh","kosong",
-  "baru","lama","cantik","jelek","baik","jahat","betul","salah","mudah","sukar",
-  "kuat","lemah","cekal","tenang","tegas","lembut","senang","susah","seronok","bosan",
-  "sihat","sakit","ubat","hospital","klinik","doktor","jururawat","demam","batuk","selsema",
-  "kulit","mata","telinga","hidung","mulut","tangan","kaki","kepala","bahu","perut",
-  "kawan","rakan","keluarga","ayah","ibu","anak","abang","kakak","adik","datuk",
-  "nenek","saudara","tetamu","jiran","komuniti","kampung","bandar","negeri","negara","Malaysia",
-  "Bahasa","Melayu","Inggeris","Arab","Cina","Tamil","tulis","baca","sebut","ejaan",
-  "bunyi","konsonan","vokal","gurisan","trengkas","latihan","ujian","panduan","kelas","sekolah",
-  "universiti","pensyarah","pelajar","tugas","projek","markah","gred","lulus","gagal","ulang kaji",
-  "penerangan","contoh","gambar rajah","garis","baseline","panduan","saiz","biasa","separuh","tebal",
-  "nipis","lengkung","lurus","melintang","ke bawah","ke atas","pantas","perlahan","gigih","fokus",
-  "teknik","kaedah","proses","langkah","tujuan","matlamat","hasil","data","rekod","prestasi",
-  "kadar","ketepatan","kemahiran","pemula","mahir","pakar","senarai","rawak","ditetapkan","pilihan",
-  "butang","antara muka","aplikasi","web","mudah alih","akses","selamat","terbuka","sumber","fail",
-  "muat turun","eksport","import","CSV","PNG","base64","imej","kanvas","kelas asas","amalan",
-  "disiplin","usaha","minat","semangat","ilmu","bimbingan","ajar","belajar","soal","jawab",
-  "latih","ulang","catat","ringkas","panjang","isi","tajuk","subtajuk","nota ringkas","rujukan",
-  "penerbitan","dokumen","rekabentuk","susun atur","kemas","bersih","mesra","pelajar","guru","pandai"
+  "naik","turun","kanan","kiri","depan","belakang","atas","bawah","besar","kecil",
+  "panjang","pendek","tebal","nipis","ringan","berat","penuh","kosong","baru","lama",
+  "cantik","jelek","baik","jahat","betul","salah","mudah","sukar","kuat","lemah",
+  "cekal","tenang","tegas","lembut","senang","susah","seronok","bosan","sihat","sakit",
+  "ubat","hospital","klinik","doktor","jururawat","demam","batuk","selsema","kulit","mata",
+  "telinga","hidung","mulut","tangan","kaki","kepala","bahu","perut","kawan","rakan",
+  "keluarga","ayah","ibu","anak","abang","kakak","adik","datuk","nenek","saudara",
+  "tetamu","jiran","komuniti","kampung","bandar","negeri","negara","Malaysia","bahasa","Melayu",
+  "Inggeris","Arab","Cina","Tamil","sebut","ejaan","bunyi","konsonan","vokal","gurisan",
+  "trengkas","latihan","ujian","panduan","kelas","universiti","pensyarah","pelajar","tugas","projek",
+  "markah","gred","lulus","gagal","ulang kaji","penerangan","contoh","gambar rajah","garis","baseline",
+  "panduan","saiz","biasa","separuh","tebal","nipis","lengkung","lurus","melintang","ke bawah",
+  "ke atas","pantas","perlahan","gigih","fokus","teknik","kaedah","proses","langkah","tujuan",
+  "matlamat","hasil","data","rekod","prestasi","kadar","ketepatan","kemahiran","pemula","mahir",
+  "pakar","senarai","rawak","ditetapkan","pilihan","butang","antara muka","aplikasi","web","mudah alih",
+  "akses","selamat","terbuka","sumber","fail","muat turun","eksport","import","CSV","PNG",
+  "base64","imej","kanvas","kelas asas","amalan","disiplin","usaha","minat","semangat","ilmu",
+  "bimbingan","ajar","belajar","soal","jawab","latih","ulang","catat","ringkas","panjang",
+  "isi","tajuk","subtajuk","nota ringkas","rujukan","penerbitan","dokumen","rekabentuk","susun atur","kemas",
+  "bersih","mesra","pelajar","guru","pandai","mari","ke","sekolah","pergi","datang"
 ];
-// Auto-fill dropdown untuk mod "ditetapkan"
+
 window.addEventListener('DOMContentLoaded', () => {
   const select = document.getElementById('senaraiDitETapkan');
   if (select) {
@@ -46,9 +46,8 @@ window.addEventListener('DOMContentLoaded', () => {
       opt.textContent = w;
       select.appendChild(opt);
     });
-    // Contoh senarai dalam panel
     const ul = document.getElementById('contohList');
-    if (ul) window.WORDS.slice(0, 50).forEach(w => {
+    if (ul) window.WORDS.slice(0, 60).forEach(w => {
       const li = document.createElement('li');
       li.textContent = w;
       ul.appendChild(li);
