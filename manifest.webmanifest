@@ -1,18 +1,21 @@
 {
   "name": "Gurisan Trengkas",
   "short_name": "Trengkas",
-  "start_url": ".",
-  "scope": ".",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#f7f7fb",
   "theme_color": "#007c91",
-  "description": "Aplikasi: Lukis gurisan shorthand → terjemah ke perkataan Bahasa Melayu (mock AI).",
+  "description": "Aplikasi latihan Sistem Trengkas Malaysia (Pitman 2000)",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='192' height='192'%3E%3Crect width='100%25' height='100%25' fill='%23007c91'/%3E%3Ctext x='50%25' y='54%25' font-size='96' fill='white' text-anchor='middle'%3EG%3C/text%3E%3C/svg%3E",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }
