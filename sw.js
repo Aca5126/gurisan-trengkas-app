@@ -1,5 +1,4 @@
-// sw.js — Service Worker for offline support
-
+// sw.js — Service Worker untuk sokongan offline
 const CACHE_NAME = 'trengkas-cache-v1';
 const ASSETS = [
   './',
@@ -9,14 +8,14 @@ const ASSETS = [
   './manifest.webmanifest'
 ];
 
-// Install event: cache all core assets
+// Install: cache aset teras
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
 });
 
-// Activate event: clean up old caches
+// Activate: bersihkan cache lama
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -25,7 +24,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event: serve from cache, fallback to network
+// Fetch: cuba cache dahulu, jatuh ke rangkaian
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then(res => res || fetch(event.request))
