@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
+// Optional: jika mahu simpan sejarah ke DB (contoh MongoDB).
+// Buat sambungan Mongoose di server.js jika diperlukan.
+// Buat masa ini, fail ini hanya template.
+
+const mongoose = require('mongoose');
 
 const TranslationSchema = new mongoose.Schema({
-  time: { type: Date, default: Date.now },
-  hint: { type: String },
-  shorthand: { type: String },   // deskripsi simbol/fonem (hasil OpenAI)
-  fullText: { type: String, required: true },
-  confidence: { type: Number, min: 0, max: 1, required: true },
-  candidates: { type: [String], default: [] },
-  imageRef: { type: String }     // optional: simpan dataURL pendek atau pointer storage
-}, { timestamps: true });
+  imageHash: { type: String },
+  output: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
 
-export default mongoose.model('Translation', TranslationSchema);
+module.exports = mongoose.models.Translation || mongoose.model('Translation', TranslationSchema);
