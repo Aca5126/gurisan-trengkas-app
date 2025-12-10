@@ -6,36 +6,53 @@
   <title>Gurisan Trengkas → Perkataan</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#3f51b5" />
+  <meta name="theme-color" content="#007c91" />
 </head>
 <body>
   <header>
     <h1>Gurisan Trengkas → Perkataan</h1>
-    <p class="subtitle">Lukis pada canvas, tekan Kenali, lihat fonem & calon kata</p>
+    <p class="subtitle">Lukis pada canvas, tekan Kenali, lihat terjemahan & keyakinan</p>
   </header>
+
   <main>
     <section class="controls">
-      <input id="targetWord" type="text" placeholder="Perkataan sasaran (opsyenal)" />
+      <input id="targetWord" type="text" placeholder="Perkataan sasaran (opsyenal)" aria-label="Perkataan sasaran" />
       <div class="buttons">
-        <button id="recognizeBtn">Kenali</button>
-        <button id="clearBtn">Clear</button>
-        <button id="exportCsvBtn">Export CSV</button>
+        <button id="recognizeBtn" aria-label="Kenali gurisan">Kenali</button>
+        <button id="clearBtn" aria-label="Bersihkan canvas">Clear</button>
+        <button id="exportCsvBtn" aria-label="Export sejarah ke CSV">Export CSV</button>
+        <button id="penBtn" aria-label="Tukar ke Pen">Pen</button>
+        <button id="eraserBtn" aria-label="Tukar ke Eraser">Eraser</button>
+        <button id="downloadBtn" aria-label="Muat turun lukisan">Muat Turun</button>
       </div>
     </section>
+
     <section>
       <canvas id="canvas" width="360" height="520"></canvas>
-      <div class="help">Tip: Garis panjang ke kanan ≈ “bu”, pendek ke kanan ≈ “ku”, pendek ke bawah ≈ “ba”.</div>
+      <div class="help">Tip: Gunakan Pen untuk melukis, Eraser untuk padam. Tekan Kenali untuk terjemahan mock.</div>
     </section>
+
     <section class="card">
-      <div class="row"><strong>Fonem:</strong><span id="phonemes">-</span></div>
+      <div class="row"><strong>Shorthand:</strong><span id="phonemes">-</span></div>
       <div class="row"><strong>Calon kata:</strong><span id="candidates">-</span></div>
       <div class="row"><strong>Hasil terbaik:</strong><span id="bestWord">-</span></div>
       <div class="row"><strong>Keyakinan:</strong><span id="confidence">-</span></div>
+      <div class="conf-bar"><span></span></div>
     </section>
+
     <h2>Sejarah</h2>
     <ul id="historyList"></ul>
+
+    <h2>Panduan Shorthand</h2>
+    <div class="guide-tabs">
+      <button id="tabBm" class="active">Bahasa Melayu</button>
+      <button id="tabPitman">Pitman</button>
+    </div>
+    <div id="guide" class="card"></div>
   </main>
-  <footer><small>Berfungsi offline jika disimpan ke Home Screen. Data hanya di peranti anda.</small></footer>
+
+  <footer><small>Berfungsi offline jika dipasang ke skrin utama. Data hanya di peranti anda.</small></footer>
+
   <script src="app.js"></script>
 </body>
 </html>
