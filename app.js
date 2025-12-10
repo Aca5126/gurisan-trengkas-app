@@ -8,8 +8,8 @@ const penColor = '#007c91';
 const penWidth = 4;
 const eraserWidth = 16;
 
-// Sejarah untuk eksport CSV
-const history = [];
+// Sejarah lokal (untuk export CSV)
+const historyLocal = [];
 
 // ----- Alat lukisan -----
 function applyTool() {
@@ -116,7 +116,7 @@ clearBtn.addEventListener('click', () => {
   drawGuideLine();
 });
 
-// ----- Download lukisan -----
+// ----- Muat turun lukisan -----
 downloadBtn.addEventListener('click', () => {
   canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob);
@@ -128,14 +128,14 @@ downloadBtn.addEventListener('click', () => {
   }, 'image/png');
 });
 
-// ----- Export CSV -----
+// ----- Export CSV (lokal) -----
 exportCsvBtn.addEventListener('click', () => {
-  if (!history.length) {
+  if (!historyLocal.length) {
     alert('Tiada sejarah untuk dieksport. Buat beberapa kenalian dahulu.');
     return;
   }
   const header = ['masa','hint','hasil','keyakinan','calon'];
-  const rows = history.map(h => [
+  const rows = historyLocal.map(h => [
     h.time,
     h.hint ?? '',
     h.result,
@@ -152,65 +152,59 @@ exportCsvBtn.addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
 
-// ----- Mock AI Translate -----
-function mockTranslate(imageDataUrl, hint) {
-  const candidates = [
-    'memandikan','pasukan','diputuskan','menguji','membantu',
-    'menjaga','menipu','zapin','bajunya','keutamaan',
-    'bisik','senyum','memasak','paksa','sembunyi',
-    'ketenangan','makan','masing-masing','ketepikan'
-  ];
-
-  let pick = candidates[Math.floor(Math.random()*candidates.length)];
-  if (hint) {
-    const h = hint.toLowerCase();
-    const bias = candidates.find(c => c.startsWith(h));
-    if (bias) pick = bias;
-  }
-
-  const confidence = 0.55 + Math.random()*0.4;
-  const list = uniqueList([pick, ...shuffle(candidates).slice(0,5)]);
-  return {
-    shorthand: 'simbol trengkas',
-    fullText: pick,
-    confidence,
-    candidates: list
-  };
-}
-
-function shuffle(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function uniqueList(arr) {
-  const seen = new Set();
-  return arr.filter(x => (seen.has(x) ? false : (seen.add(x), true)));
-}
-
-// ----- Kenali -----
-recognizeBtn.addEventListener('click', () => {
-  const imageDataUrl = canvas.toDataURL('image/png');
-  const hint = targetWordEl.value?.trim();
-  const { shorthand, fullText, confidence, candidates } = mockTranslate(imageDataUrl, hint);
-
-  phonemesEl.textContent = shorthand;
-  bestWordEl.textContent = fullText;
-  confidenceEl.textContent = `${Math.round(confidence*100)}%`;
-  confBar.style.width = `${Math.round(confidence*100)}%`;
-  candidatesEl.textContent = candidates.join(', ');
-
-  history.push({
-    time: new Date().toISOString(),
-    hint,
-    result: fullText,
-    confidence,
-    candidates
+// ----- Panggilan API backend -----
+async function callTranslateAPI(imageDataUrl, hint) {
+  const base = window.API_BASE || '';
+  const res = await fetch(`${base}/api/translate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ imageDataUrl, hint })
   });
+  if (!res.ok) {
+    throw new Error('Ralat API: ' + res.status);
+  }
+  const json = await res.json();
+  if (!json.ok) {
+    throw new Error('Ralat API: ' + (json.error || 'tidak diketahui'));
+  }
+  return json.data;
+}
+
+// ----- Kenali (guna backend) -----
+recognizeBtn.addEventListener('click', async () => {
+  try {
+    const imageDataUrl = canvas.toDataURL('image/png');
+    const hint = targetWordEl.value?.trim();
+
+    // UI sementara
+    bestWordEl.textContent = 'Memproses...';
+    confidenceEl.textContent = '-';
+    candidatesEl.textContent = '-';
+    phonemesEl.textContent = '-';
+    confBar.style.width = '0%';
+
+    const data = await callTranslateAPI(imageDataUrl, hint);
+
+    phonemesEl.textContent = data.shorthand || '-';
+    bestWordEl.textContent = data.fullText || '-';
+    confidenceEl.textContent = `${Math.round((data.confidence || 0)*100)}%`;
+    confBar.style.width = `${Math.round((data.confidence || 0)*100)}%`;
+    candidatesEl.textContent = (data.candidates || []).join(', ');
+
+    historyLocal.push({
+      time: new Date().toISOString(),
+      hint,
+      result: data.fullText || '-',
+      confidence: data.confidence || 0,
+      candidates: data.candidates || []
+    });
+  } catch (err) {
+    bestWordEl.textContent = 'Ralat terjemahan';
+    candidatesEl.textContent = '-';
+    confidenceEl.textContent = '-';
+    confBar.style.width = '0%';
+    alert('Tidak berjaya terjemah: ' + err.message);
+  }
 });
 
 // ----- Panduan Trengkas -----
@@ -231,3 +225,5 @@ function renderGuide() {
     `<div class="row"><strong>${item.symbol}</strong><span>${item.phonem}</span></div>`
   ).join('');
 }
+
+renderGuide();
