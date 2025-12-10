@@ -2,100 +2,153 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8">
-  <title>Trengkas Recognition App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 20px;
-    }
-    canvas {
-      border: 1px solid #000;
-      margin-top: 10px;
-    }
-    button {
-      margin: 5px;
-      padding: 10px 20px;
-    }
-    #output {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+  <title>Latihan Gurisan Trengkas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // URL backend kekal
+    window.API_BASE = 'https://gurisan-trengkas-backend.onrender.com';
+  </script>
 </head>
 <body>
-  <h1>Aplikasi Gurisan Trengkas by Aziawati Ahmad Azizi</h1>
+  <header class="header">
+    <div class="brand">
+      <div class="logo">🎓</div>
+      <div>
+        <h1>Latihan Gurisan Trengkas</h1>
+        <p class="subtitle">Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="exportCsvBtn" class="secondary">Eksport CSV Rekod</button>
+      <label class="file-btn">
+        Import CSV Rekod
+        <input type="file" id="importCsvInput" accept=".csv" hidden>
+      </label>
+      <button id="resetPrestasiBtn" class="danger">Reset Prestasi</button>
+    </div>
+  </header>
 
-  <!-- Kanvas untuk lukisan -->
-  <canvas id="canvas" width="400" height="200"></canvas><br>
+  <main class="layout">
+    <section class="panel">
+      <h2>Perkataan sasaran (Latihan)</h2>
+      <p class="hint">Contoh: lusa, buku, rumah...</p>
+      <div class="modes">
+        <label><input type="radio" name="mode" value="bebas" checked> Bebas</label>
+        <label><input type="radio" name="mode" value="rawak"> Rawak</label>
+        <label><input type="radio" name="mode" value="ditetapkan"> Ditetapkan dari senarai</label>
+      </div>
 
-  <!-- Butang kawalan -->
-  <button id="penBtn">Pen</button>
-  <button id="eraserBtn">Eraser</button>
-  <button id="clearBtn">Clear</button>
-  <button id="downloadBtn">Download</button>
-  <button id="verifyBtn">Sahkan</button>
+      <div class="target-row">
+        <input id="perkataan" placeholder="Contoh: lusa, buku, rumah..." aria-label="Perkataan sasaran">
+        <button id="pilihRawakBtn" class="secondary">Pilih Rawak</button>
+        <select id="senaraiDitETapkan" title="Senarai ditetapkan"></select>
+      </div>
 
-  <!-- Output -->
-  <div id="output">Terjemahan akan muncul di sini...</div>
+      <p class="small">Masukkan perkataan yang anda ingin guris, kemudian lukis gurisan trengkas di bawah.</p>
 
-  <script>
-    // URL backend Render
-    window.API_BASE = 'https://gurisan-trengkas-backend.onrender.com';
+      <div class="canvas-toolbar">
+        <button id="penBtn" class="primary">Pen</button>
+        <button id="padamBtn" class="secondary">Padam</button>
+        <span class="sep"></span>
+        <label class="checkbox">
+          <input type="checkbox" id="toggleGuides" checked> Garis panduan
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="toggleBaseline" checked> Baseline
+        </label>
+        <label>
+          Saiz gurisan:
+          <select id="saizGurisan">
+            <option value="normal" selected>Biasa (0.5 cm)</option>
+            <option value="separuh">Separuh (0.25 cm)</option>
+          </select>
+        </label>
+      </div>
 
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    let drawing = false;
-    let erasing = false;
+      <div class="canvas-wrap">
+        <canvas id="canvas" width="800" height="300" aria-label="Kanvas gurisan"></canvas>
+      </div>
 
-    // Tetapan asas
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = '#000';
+      <div class="canvas-actions">
+        <button id="semakBtn" class="primary">Semak Gurisan</button>
+        <button id="bersihBtn" class="secondary">Bersihkan</button>
+        <button id="muatTurunBtn" class="secondary">Muat Turun</button>
+      </div>
 
-    // Event mouse
-    canvas.addEventListener('mousedown', () => { drawing = true; ctx.beginPath(); });
-    canvas.addEventListener('mouseup', () => { drawing = false; });
-    canvas.addEventListener('mousemove', draw);
+      <div id="hasil" class="hasil">Tiada semakan lagi</div>
+    </section>
 
-    function draw(e) {
-      if (!drawing) return;
-      ctx.lineWidth = erasing ? 10 : 2;
-      ctx.strokeStyle = erasing ? '#fff' : '#000';
-      ctx.lineTo(e.offsetX, e.offsetY);
-      ctx.stroke();
-    }
+    <section class="panel">
+      <h2>Rekod prestasi</h2>
+      <div class="stats">
+        <div class="stat"><span class="label">Betul:</span> <span id="betul">0</span></div>
+        <div class="stat"><span class="label">Salah:</span> <span id="salah">0</span></div>
+        <div class="stat"><span class="label">Kadar Kejayaan:</span> <span id="kejayaan">0%</span></div>
+        <div class="stat"><span class="label">Purata Ketepatan:</span> <span id="ketepatan">0%</span></div>
+        <div class="stat"><span class="label">Tahap Kemahiran:</span> <span id="tahap">Pemula</span></div>
+      </div>
 
-    // Butang kawalan
-    document.getElementById('penBtn').onclick = () => { erasing = false; };
-    document.getElementById('eraserBtn').onclick = () => { erasing = true; };
-    document.getElementById('clearBtn').onclick = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.beginPath();
-    };
-    document.getElementById('downloadBtn').onclick = () => {
-      const link = document.createElement('a');
-      link.download = 'gurisan.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    };
+      <h3>Panduan trengkas Pitman 2000 (Malaysia)</h3>
+      <p>Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan. Setiap jenis gurisan mewakili kumpulan bunyi tertentu.</p>
 
-    // Fungsi sahkan → hantar imej ke backend
-    document.getElementById('verifyBtn').onclick = async () => {
-      const imageBase64 = canvas.toDataURL().split(',')[1];
-      document.getElementById('output').innerText = 'Sedang proses...';
+      <div class="guide-grid">
+        <div class="guide">
+          <h4>Gurisan ke bawah</h4>
+          <p>t, d, p, b</p>
+          <div class="guide-lines">
+            <div class="dash"></div>
+            <div class="base thick"></div>
+            <div class="dash"></div>
+          </div>
+        </div>
+        <div class="guide">
+          <h4>Gurisan melintang</h4>
+          <p>k, g, s, z</p>
+          <div class="guide-lines horizontal">
+            <div class="dash"></div>
+            <div class="base thick"></div>
+            <div class="dash"></div>
+          </div>
+        </div>
+        <div class="guide">
+          <h4>Gurisan ke atas</h4>
+          <p>l, r, m, n</p>
+          <div class="guide-lines up">
+            <div class="dash"></div>
+            <div class="base thick"></div>
+            <div class="dash"></div>
+          </div>
+        </div>
+        <div class="guide">
+          <h4>Gurisan lengkung</h4>
+          <p>f, v, th</p>
+          <div class="guide-lines curve">
+            <div class="dash"></div>
+            <div class="base thick"></div>
+            <div class="dash"></div>
+          </div>
+        </div>
+      </div>
 
-      try {
-        const res = await fetch(`${window.API_BASE}/api/translate`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64 })
-        });
-        const data = await res.json();
-        document.getElementById('output').innerText = data.translation || data.error;
-      } catch (err) {
-        document.getElementById('output').innerText = 'Ralat sambungan ke backend.';
-      }
-    };
-  </script>
+      <details class="mt">
+        <summary>Saiz gurisan</summary>
+        <p>Biasa: 0.5 cm | Separuh: 0.25 cm</p>
+      </details>
+
+      <details>
+        <summary>Contoh latihan (300 perkataan)</summary>
+        <p>Pilih “Rawak” atau “Ditentukan” untuk menggunakan senarai 300 perkataan asas latihan.</p>
+        <ul id="contohList" class="contoh-list"></ul>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>&copy; 2025 Latihan Trengkas — Fokus pada aksesibiliti dan pembelajaran autentik.</p>
+  </footer>
+
+  <script src="words.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
