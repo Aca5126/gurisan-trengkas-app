@@ -2,62 +2,51 @@
 <html lang="ms">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-  <title>Gurisan Trengkas → Perkataan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trengkas Pitman — Sahkan Gurisan</title>
+  <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="theme-color" content="#007c91" />
 </head>
 <body>
   <header>
-    <h1>Gurisan Trengkas → Perkataan</h1>
-    <p class="subtitle">Lukis pada canvas, tekan Sahkan, lihat terjemahan & keyakinan</p>
+    <h1>Trengkas Pitman — Sahkan Gurisan</h1>
   </header>
 
   <main>
-    <section class="controls">
-      <input id="targetWord" type="text" placeholder="Perkataan sasaran (optional)" aria-label="Perkataan sasaran" />
-      <div class="buttons">
-        <!-- Teks butang ditukar kepada Sahkan -->
-        <button id="recognizeBtn">Sahkan</button>
-        <button id="clearBtn">Clear</button>
-        <button id="exportCsvBtn">Export CSV</button>
-        <button id="penBtn">Pen</button>
-        <button id="eraserBtn">Eraser</button>
-        <button id="downloadBtn">Muat Turun</button>
-      </div>
+    <section class="toolbar">
+      <button id="penBtn" class="active">Pen</button>
+      <button id="eraserBtn">Eraser</button>
+      <button id="clearBtn">Clear + Baseline</button>
+      <button id="downloadBtn">Download PNG</button>
+      <button id="confirmBtn">Sahkan</button>
     </section>
 
-    <section>
-      <canvas id="canvas" width="360" height="300"></canvas>
-      <div class="help">Tip: Garisan kelabu gelap melintang di tengah ialah baseline untuk gurisan trengkas.</div>
+    <section class="canvas-wrap">
+      <canvas id="pad" width="900" height="500" aria-label="Pad lukisan trengkas"></canvas>
+      <p class="hint">Lukis trengkas anda di kanvas. Gunakan “Sahkan” untuk terjemahan.</p>
     </section>
 
-    <section class="card">
-      <div class="row"><strong>Simbol:</strong><span id="phonemes">-</span></div>
-      <div class="row"><strong>Calon kata:</strong><span id="candidates">-</span></div>
-      <div class="row"><strong>Hasil terbaik:</strong><span id="bestWord">-</span></div>
-      <div class="row"><strong>Keyakinan:</strong><span id="confidence">-</span></div>
-      <div class="conf-bar"><span></span></div>
+    <section class="result">
+      <h2>Hasil Terjemahan</h2>
+      <pre id="resultText" aria-live="polite"></pre>
     </section>
-
-    <h2>Panduan Trengkas (Pitman BM 2000)</h2>
-    <div id="guide" class="card"></div>
   </main>
 
-  <footer><small>Berfungsi offline jika dipasang ke skrin utama. Data hanya di peranti anda.</small></footer>
+  <footer>
+    <small>Versi PWA — berfungsi offline untuk antaramuka. Terjemahan memerlukan sambungan internet ke backend.</small>
+  </footer>
 
+  <!-- Set API_BASE to your Railway backend URL -->
   <script>
-    // Tetapkan URL backend (ubah ikut hosting anda)
-    window.API_BASE = 'http://localhost:8080';
-
-    // Daftar service worker (PWA)
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      });
-    }
+    // Tukar nilai ini kepada URL Railway anda selepas deploy.
+    // Contoh: 'https://trengkas-backend.up.railway.app'
+    window.API_BASE = 'https://YOUR-RAILWAY-URL';
   </script>
   <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
 </body>
 </html>
