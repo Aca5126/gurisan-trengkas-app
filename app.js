@@ -1,131 +1,217 @@
-const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
-let strokes=[],drawing=false,startTime=0;
+// --- Canvas & alat lukisan ---
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+let tool = 'pen'; // 'pen' atau 'eraser'
 
-function pos(ev){
-  const r=canvas.getBoundingClientRect();
+const penColor = '#007c91';
+const penWidth = 4;
+const eraserWidth = 16;
+
+function applyTool() {
+  if (tool === 'pen') {
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = penColor;
+    ctx.lineWidth = penWidth;
+  } else {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.strokeStyle = 'rgba(0,0,0,1)';
+    ctx.lineWidth = eraserWidth;
+  }
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+}
+
+function startDraw(e) {
+  drawing = true;
+  ctx.beginPath();
+  const { x, y } = pointerPosition(e);
+  ctx.moveTo(x, y);
+  applyTool();
+}
+function moveDraw(e) {
+  if (!drawing) return;
+  const { x, y } = pointerPosition(e);
+  ctx.lineTo(x, y);
+  ctx.stroke();
+}
+function endDraw() { drawing = false; }
+
+function pointerPosition(ev) {
+  const r = canvas.getBoundingClientRect();
   return {
-    x:(ev.clientX-r.left)*(canvas.width/r.width),
-    y:(ev.clientY-r.top)*(canvas.height/r.height)
+    x: (ev.clientX - r.left) * (canvas.width / r.width),
+    y: (ev.clientY - r.top) * (canvas.height / r.height)
   };
 }
 
-function start(ev){
-  drawing=true;
-  startTime=performance.now();
-  strokes.push([]);
+canvas.addEventListener('pointerdown', startDraw);
+canvas.addEventListener('pointermove', moveDraw);
+canvas.addEventListener('pointerup', endDraw);
+canvas.addEventListener('pointerleave', endDraw);
+
+// --- Elemen UI ---
+const phonemesEl = document.getElementById('phonemes');
+const candidatesEl = document.getElementById('candidates');
+const bestWordEl = document.getElementById('bestWord');
+const confidenceEl = document.getElementById('confidence');
+const historyList = document.getElementById('historyList');
+const penBtn = document.getElementById('penBtn');
+const eraserBtn = document.getElementById('eraserBtn');
+const recognizeBtn = document.getElementById('recognizeBtn');
+const clearBtn = document.getElementById('clearBtn');
+const exportCsvBtn = document.getElementById('exportCsvBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const targetWordEl = document.getElementById('targetWord');
+
+// Bar keyakinan (sedia dalam HTML)
+const confBar = document.querySelector('.conf-bar > span');
+
+// Toggle Pen/Eraser
+function setTool(next) {
+  tool = next;
+  penBtn.classList.toggle('active', tool === 'pen');
+  eraserBtn.classList.toggle('active', tool === 'eraser');
 }
+penBtn.addEventListener('click', () => setTool('pen'));
+eraserBtn.addEventListener('click', () => setTool('eraser'));
+setTool('pen'); // default
 
-function move(ev){
-  if(!drawing)return;
-  const {x,y}=pos(ev);
-  const t=(performance.now()-startTime)/1000;
-  strokes[strokes.length-1].push({x,y,t});
-  draw();
-}
-
-function end(){
-  drawing=false;
-  draw();
-}
-
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle='#3f51b5';
-  ctx.lineWidth=3;
-  ctx.lineCap='round';
-  for(const s of strokes){
-    if(s.length<1)continue;
-    ctx.beginPath();
-    ctx.moveTo(s[0].x,s[0].y);
-    for(const p of s)ctx.lineTo(p.x,p.y);
-    ctx.stroke();
-  }
-}
-
-canvas.addEventListener('pointerdown',start);
-canvas.addEventListener('pointermove',move);
-canvas.addEventListener('pointerup',end);
-canvas.addEventListener('pointerleave',end);
-
-const phonemesEl=document.getElementById('phonemes'),
-      candidatesEl=document.getElementById('candidates'),
-      bestWordEl=document.getElementById('bestWord'),
-      confidenceEl=document.getElementById('confidence'),
-      targetWordEl=document.getElementById('targetWord'),
-      historyList=document.getElementById('historyList');
-
-const MAP={short_down:'ba',short_right:'ku',long_right:'bu',curve_small:'la',curve_big:'ma'};
-
-function strokeToken(s){
-  if(s.length<2)return'unknown';
-  const dx=s[s.length-1].x-s[0].x,
-        dy=s[s.length-1].y-s[0].y,
-        len=Math.hypot(dx,dy);
-  if(len<25) return Math.abs(dx)>Math.abs(dy)?'short_right':'short_down';
-  else return Math.abs(dx)>Math.abs(dy)?'long_right':dy>0?'curve_big':'curve_small';
-}
-
-function tokensToPhonemes(t){return t.map(x=>MAP[x]||'??');}
-
-function candidates(ph){
-  const j=ph.join('');
-  const c=new Set();
-  if(j.includes('bu')&&j.includes('ku'))c.add('buku');
-  if(j.includes('ma')&&j.includes('lam'))c.add('malam');
-  if(j.includes('ma')&&j.includes('kan'))c.add('makan');
-  if(j.includes('bu')&&j.includes('ka'))c.add('buka');
-  ['buku','makan','malam','buka','balik','lama','lusa'].forEach(w=>c.add(w));
-  return Array.from(c).slice(0,5);
-}
-
-function score(ph,w){
-  let b=0.5;
-  const j=ph.join('');
-  if(w.includes(j)||j.includes(w))b+=0.3;
-  if(['buku','makan','malam','buka'].includes(w))b+=0.1;
-  return Math.min(b,0.95);
-}
-
-function recognize(){
-  const f=strokes.filter(s=>s.length>0);
-  if(f.length===0){alert('Sila lukis dahulu');return;}
-  const tokens=f.map(strokeToken),
-        ph=tokensToPhonemes(tokens),
-        c=candidates(ph),
-        sc=c.map(w=>[w,score(ph,w)]).sort((a,b)=>b[1]-a[1]);
-  let [best,conf]=sc[0];
-  
-  phonemesEl.textContent=ph.join(' ');
-  candidatesEl.textContent=sc.map(x=>x[0]).join(', ');
-  bestWordEl.textContent=best;
-  confidenceEl.textContent=(conf*100).toFixed(0)+'%';
-
-  // Save to history
-  const li=document.createElement('li');
-  li.textContent=`Fonem: ${ph.join(' ')} | Best: ${best} | Keyakinan: ${(conf*100).toFixed(0)}%`;
-  historyList.prepend(li);
-}
-
-// Button wiring
-document.getElementById('recognizeBtn').addEventListener('click',recognize);
-document.getElementById('clearBtn').addEventListener('click',()=>{
-  strokes=[];draw();
+// Muat turun lukisan
+downloadBtn.addEventListener('click', () => {
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gurisan-${new Date().toISOString().slice(0,19)}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, 'image/png');
 });
-document.getElementById('exportCsvBtn').addEventListener('click',()=>{
-  let csv="Fonem,Best,Keyakinan\n";
-  historyList.querySelectorAll('li').forEach(li=>{
-    csv+=li.textContent.replace(/\s*\|\s*/g,",")+"\n";
+
+// Bersih canvas
+clearBtn.addEventListener('click', () => {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // reset paparan
+  phonemesEl.textContent = '-';
+  candidatesEl.textContent = '-';
+  bestWordEl.textContent = '-';
+  confidenceEl.textContent = '-';
+  confBar.style.width = '0%';
+});
+
+// Export CSV daripada sejarah
+exportCsvBtn.addEventListener('click', () => {
+  const rows = Array.from(historyList.querySelectorAll('li')).map(li => {
+    const parts = Array.from(li.querySelectorAll('div')).map(d => d.textContent.split(': ').pop());
+    const ts = li.querySelector('small')?.textContent || '';
+    const [sh, full, conf] = parts;
+    return { shorthand: sh, fullText: full, confidence: conf, timestamp: ts };
   });
-  const blob=new Blob([csv],{type:'text/csv'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download="history.csv";a.click();
+
+  const header = ['shorthand','fullText','confidence','timestamp'];
+  const csv = [header.join(','), ...rows.map(o => header.map(k => `"${String(o[k]).replace(/"/g,'""')}"`).join(','))].join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'sejarah.csv'; a.click();
   URL.revokeObjectURL(url);
 });
 
-// Register service worker
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
+// --- Mock AI Translate ---
+function mockTranslate(imageDataUrl, hint) {
+  const candidates = ['yang','dengan','untuk','makan','buku','balik','malam','buka','lama','lusa'];
+  let pick = candidates[Math.floor(Math.random()*candidates.length)];
+  if (hint) {
+    const h = hint.toLowerCase();
+    const bias = candidates.find(c => c.startsWith(h));
+    if (bias) pick = bias;
+  }
+  const confidence = 0.5 + Math.random()*0.45; // 50–95%
+  return { shorthand:'yg', fullText:pick, confidence, candidates: [pick, ...shuffle(candidates).slice(0,4)] };
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i=a.length-1;i>0;i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+// Kenali (mock)
+recognizeBtn.addEventListener('click', () => {
+  // ambil imej canvas
+  const imageDataUrl = canvas.toDataURL('image/png');
+  const hint = targetWordEl.value?.trim();
+
+  const { shorthand, fullText, confidence, candidates } = mockTranslate(imageDataUrl, hint);
+
+  phonemesEl.textContent = shorthand;
+  bestWordEl.textContent = fullText;
+  confidenceEl.textContent = `${Math.round(confidence*100)}%`;
+  confBar.style.width = `${Math.round(confidence*100)}%`;
+  candidatesEl.textContent = candidates.join(', ');
+
+  const li = document.createElement('li');
+  li.innerHTML = `
+    <div><strong>Shorthand:</strong> ${shorthand}</div>
+    <div><strong>Terjemahan:</strong> ${fullText}</div>
+    <div><strong>Keyakinan:</strong> ${Math.round(confidence*100)}%</div>
+    <div><small>${new Date().toLocaleString()}</small></div>
+  `;
+  // pratinjau imej (opsyenal)
+  const img = new Image();
+  img.src = imageDataUrl;
+  img.style.maxWidth = '100%';
+  img.style.borderRadius = '6px';
+  img.style.marginTop = '6px';
+  li.appendChild(img);
+
+  historyList.prepend(li);
+});
+
+// --- Panduan Shorthand (mock) ---
+const GUIDE = {
+  bm: [
+    { short: 'yg', full: 'yang' },
+    { short: 'dgn', full: 'dengan' },
+    { short: 'utk', full: 'untuk' },
+    { short: 'blh', full: 'boleh' }
+  ],
+  pitman: [
+    { symbol: 'Garis ringan →', phonem: 'k' },
+    { symbol: 'Garis berat ↓', phonem: 'b/p' },
+    { symbol: 'Bulatan kecil', phonem: 's' },
+    { symbol: 'Lengkung besar', phonem: 'm' }
+  ]
+};
+
+const guideEl = document.getElementById('guide');
+const tabBm = document.getElementById('tabBm');
+const tabPitman = document.getElementById('tabPitman');
+
+function renderGuide(tab='bm') {
+  const data = GUIDE[tab];
+  guideEl.innerHTML = data.map(item => {
+    return tab === 'bm'
+      ? `<div class="row"><strong>${item.short}</strong> <span>${item.full}</span></div>`
+      : `<div class="row"><strong>${item.symbol}</strong> <span>${item.phonem}</span></div>`;
+  }).join('');
+}
+function setGuideTab(tab) {
+  tabBm.classList.toggle('active', tab==='bm');
+  tabPitman.classList.toggle('active', tab==='pitman');
+  renderGuide(tab);
+}
+tabBm.addEventListener('click', () => setGuideTab('bm'));
+tabPitman.addEventListener('click', () => setGuideTab('pitman'));
+setGuideTab('bm'); // lalai
+
+// --- Service Worker ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js');
   });
 }
