@@ -1,13 +1,9 @@
 import { Router } from 'express';
-import Translation from '../models/Translation.js';
 import { recognizeTrengkas } from '../services/openai.js';
 
 const router = Router();
+const history = []; // simpan dalam memori sahaja
 
-/**
- * POST /api/translate
- * body: { imageDataUrl: string(dataURL), hint?: string }
- */
 router.post('/', async (req, res) => {
   try {
     const { imageDataUrl, hint } = req.body;
@@ -17,46 +13,25 @@ router.post('/', async (req, res) => {
 
     const result = await recognizeTrengkas({ imageDataUrl, hint });
 
-    const doc = await Translation.create({
+    const record = {
+      time: new Date().toISOString(),
       hint,
       shorthand: result.shorthand,
       fullText: result.fullText,
       confidence: result.confidence,
-      candidates: result.candidates,
-      imageRef: '' // optional: anda boleh simpan pointer jika guna storage
-    });
+      candidates: result.candidates
+    };
+    history.push(record);
 
-    return res.json({
-      ok: true,
-      data: {
-        id: doc._id,
-        time: doc.time,
-        hint: doc.hint,
-        shorthand: doc.shorthand,
-        fullText: doc.fullText,
-        confidence: doc.confidence,
-        candidates: doc.candidates
-      }
-    });
+    return res.json({ ok: true, data: record });
   } catch (err) {
     console.error('Ralat /api/translate:', err.message);
     return res.status(500).json({ error: 'Terjadi ralat semasa terjemahan' });
   }
 });
 
-/**
- * GET /api/translate/history
- * query: ?limit=50
- */
-router.get('/history', async (req, res) => {
-  try {
-    const limit = Math.min(Number(req.query.limit) || 50, 200);
-    const items = await Translation.find().sort({ time: -1 }).limit(limit).lean();
-    return res.json({ ok: true, data: items });
-  } catch (err) {
-    console.error('Ralat sejarah:', err.message);
-    return res.status(500).json({ error: 'Terjadi ralat semasa mengambil sejarah' });
-  }
+router.get('/history', (_req, res) => {
+  res.json({ ok: true, data: history.slice(-50).reverse() });
 });
 
 export default router;
