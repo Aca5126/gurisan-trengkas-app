@@ -1,38 +1,35 @@
-import 'dotenv/config';
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
 
-import translateRouter from './src/routes/translate.js';
+require('dotenv').config(); // Berfungsi jika lokal; di Railway gunakan Variables
+
+const translateRoutes = require('./src/routes/translate');
 
 const app = express();
+const PORT = process.env.PORT || 8080;
+const ORIGIN = process.env.ALLOWED_ORIGIN || '*';
 
-// Security & misc
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' }
-}));
-app.use(morgan('tiny'));
-
-// CORS
-const allowedOrigin = process.env.ALLOWED_ORIGIN || '*';
-app.use(cors({
-  origin: allowedOrigin,
-  credentials: false
-}));
-
-// Body parsers
+app.use(helmet());
 app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Routes
-app.use('/api/translate', translateRouter);
+app.use(cors({
+  origin: ORIGIN === '*' ? true : ORIGIN,
+  methods: ['POST', 'GET'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Health check
-app.get('/api/health', (_req, res) => res.json({ ok: true }));
+app.get('/health', (req, res) => {
+  res.json({ ok: true, time: new Date().toISOString() });
+});
 
-// Start
-const port = process.env.PORT || 8080;
-app.listen(port, () => {
-  console.log(`API berjalan di http://localhost:${port}`);
+app.use('/api/translate', translateRoutes);
+
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Server error' });
+});
+
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
 });
