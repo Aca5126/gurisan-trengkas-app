@@ -1,63 +1,56 @@
-import OpenAI from 'openai';
+const axios = require('axios');
 
-const apiKey = process.env.OPENAI_API_KEY;
-if (!apiKey) {
-  throw new Error('OPENAI_API_KEY tidak ditetapkan dalam .env');
-}
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
-export const openai = new OpenAI({ apiKey });
-
-export async function recognizeTrengkas({ imageDataUrl, hint }) {
-  const prompt = {
-    role: "user",
-    content: [
-      {
-        type: "text",
-        text: `
-Anda ialah pengenal trengkas Pitman (Bahasa Malaysia).
-Analisis imej gurisan (garis ringan/berat, lengkung, bulatan kecil/besar, arah).
-Keluarkan jawapan dalam format JSON dengan kunci:
-{
-  "shorthand": "...",
-  "fullText": "...",
-  "candidates": ["...","..."],
-  "confidence": 0.85
-}
-Hint (opsyenal): ${hint || "Tiada"}
-        `
-      },
-      { type: "image_url", image_url: { url: imageDataUrl } }
-    ]
-  };
-
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: "Anda pakar Sistem Trengkas Malaysia (Pitman 2000)." },
-      prompt
-    ],
-    temperature: 0.2
-  });
-
-  const raw = response.choices?.[0]?.message?.content?.trim() || "";
-
-  let parsed;
-  try {
-    parsed = JSON.parse(raw);
-  } catch (err) {
-    // fallback jika model tidak keluarkan JSON
-    parsed = {
-      shorthand: "",
-      fullText: raw || "tidak pasti",
-      candidates: [raw],
-      confidence: 0.5
-    };
+// Nota penting:
+// Kod ini menggunakan endpoint Chat Completions multimodal.
+// Ia menghantar imej base64 (data URL) + arahan teks untuk tafsiran trengkas.
+async function translateImageWithOpenAI({ imageDataUrl, guidanceText }) {
+  if (!OPENAI_API_KEY) {
+    throw new Error('OPENAI_API_KEY tidak ditetapkan');
   }
 
-  return {
-    shorthand: parsed.shorthand || "",
-    fullText: parsed.fullText || "tidak pasti",
-    candidates: parsed.candidates || [],
-    confidence: parsed.confidence ?? 0.5
+  // Format content untuk multimodal (teks + imej)
+  const messages = [
+    {
+      role: 'system',
+      content: [
+        { type: 'text', text: 'Anda adalah pembantu yang pakar menafsir trengkas Pitman dalam konteks bahasa Melayu. Beri terjemahan yang ringkas, jelas, dan sebutkan ketidakpastian jika ada.' }
+      ]
+    },
+    {
+      role: 'user',
+      content: [
+        { type: 'text', text: guidanceText || 'Tafsirkan gurisan trengkas ini ke dalam teks Melayu yang jelas.' },
+        {
+          type: 'input_image',
+          image_url: imageDataUrl // data:image/png;base64,xxxxx
+        }
+      ]
+    }
+  ];
+
+  // Panggilan ke OpenAI Chat Completions (multimodal)
+  const url = 'https://api.openai.com/v1/chat/completions';
+  const headers = {
+    'Authorization': `Bearer ${OPENAI_API_KEY}`,
+    'Content-Type': 'application/json'
   };
+
+  const body = {
+    model: OPENAI_MODEL,
+    messages,
+    temperature: 0.2
+  };
+
+  const resp = await axios.post(url, body, { headers });
+  const choice = resp?.data?.choices?.[0];
+  const text = choice?.message?.content || '';
+
+  return text.trim();
 }
+
+module.exports = {
+  translateImageWithOpenAI
+};
