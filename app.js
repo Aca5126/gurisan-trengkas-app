@@ -92,7 +92,7 @@ clearBtn.addEventListener('click', () => {
   bestWordEl.textContent = '-';
   confidenceEl.textContent = '-';
   confBar.style.width = '0%';
-  drawGuideLine();
+  drawGuideLine(); // lukis semula baseline
 });
 
 // Muat turun lukisan
@@ -107,7 +107,7 @@ downloadBtn.addEventListener('click', () => {
   }, 'image/png');
 });
 
-// Export CSV (optional, masih ada walaupun tiada sejarah)
+// Export CSV (optional)
 exportCsvBtn.addEventListener('click', () => {
   alert("Fungsi eksport CSV tidak aktif kerana sejarah telah dibuang.");
 });
@@ -160,5 +160,4 @@ const GUIDE = [
 const guideEl = document.getElementById('guide');
 
 function renderGuide() {
-  guideEl.innerHTML = GUIDE.map(item =>
-    `<div class="
+  guideEl.innerHTML = GUIDE
