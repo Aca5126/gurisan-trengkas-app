@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Latihan Gurisan Trengkas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <script>
     // URL backend kekal
     window.API_BASE = 'https://gurisan-trengkas-backend.onrender.com';
@@ -13,7 +13,7 @@
 <body>
   <header class="header">
     <div class="brand">
-      <div class="logo">🎓</div>
+      <div class="logo" aria-hidden="true">🎓</div>
       <div>
         <h1>Latihan Gurisan Trengkas</h1>
         <p class="subtitle">Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.</p>
@@ -23,9 +23,10 @@
       <button id="exportCsvBtn" class="secondary">Eksport CSV Rekod</button>
       <label class="file-btn">
         Import CSV Rekod
-        <input type="file" id="importCsvInput" accept=".csv" hidden>
+        <input type="file" id="importCsvInput" accept=".csv" hidden />
       </label>
       <button id="resetPrestasiBtn" class="danger">Reset Prestasi</button>
+      <button id="toggleSpeakerBtn" class="secondary">🔊 Speaker On</button>
     </div>
   </header>
 
@@ -33,16 +34,17 @@
     <section class="panel">
       <h2>Perkataan sasaran (Latihan)</h2>
       <p class="hint">Contoh: lusa, buku, rumah...</p>
+
       <div class="modes">
-        <label><input type="radio" name="mode" value="bebas" checked> Bebas</label>
-        <label><input type="radio" name="mode" value="rawak"> Rawak</label>
-        <label><input type="radio" name="mode" value="ditetapkan"> Ditetapkan dari senarai</label>
+        <label><input type="radio" name="mode" value="bebas" checked /> Bebas</label>
+        <label><input type="radio" name="mode" value="rawak" /> Rawak</label>
+        <label><input type="radio" name="mode" value="ditetapkan" /> Ditetapkan</label>
       </div>
 
       <div class="target-row">
-        <input id="perkataan" placeholder="Contoh: lusa, buku, rumah..." aria-label="Perkataan sasaran">
-        <button id="pilihRawakBtn" class="secondary">Pilih Rawak</button>
-        <select id="senaraiDitETapkan" title="Senarai ditetapkan"></select>
+        <input id="perkataan" placeholder="Contoh: lusa, buku, rumah..." aria-label="Perkataan sasaran" />
+        <button id="pilihRawakBtn" class="secondary" disabled>Pilih Rawak</button>
+        <select id="senaraiDitETapkan" title="Senarai ditetapkan" disabled></select>
       </div>
 
       <p class="small">Masukkan perkataan yang anda ingin guris, kemudian lukis gurisan trengkas di bawah.</p>
@@ -51,12 +53,8 @@
         <button id="penBtn" class="primary">Pen</button>
         <button id="padamBtn" class="secondary">Padam</button>
         <span class="sep"></span>
-        <label class="checkbox">
-          <input type="checkbox" id="toggleGuides" checked> Garis panduan
-        </label>
-        <label class="checkbox">
-          <input type="checkbox" id="toggleBaseline" checked> Baseline
-        </label>
+        <label class="checkbox"><input type="checkbox" id="toggleGuides" checked /> Garis panduan</label>
+        <label class="checkbox"><input type="checkbox" id="toggleBaseline" checked /> Baseline</label>
         <label>
           Saiz gurisan:
           <select id="saizGurisan">
@@ -67,16 +65,24 @@
       </div>
 
       <div class="canvas-wrap">
+        <div class="guide-labels">
+          <span id="labelAtas" class="guide-label">Atas</span>
+          <span id="labelBaseline" class="guide-label baseline">Baseline</span>
+          <span id="labelBawah" class="guide-label">Bawah</span>
+        </div>
         <canvas id="canvas" width="800" height="300" aria-label="Kanvas gurisan"></canvas>
       </div>
 
       <div class="canvas-actions">
         <button id="semakBtn" class="primary">Semak Gurisan</button>
+        <button id="tekaSukuKataBtn" class="secondary">Teka Suku Kata</button>
+        <button id="ulangSebutanBtn" class="secondary">🔊 Ulang Sebutan</button>
         <button id="bersihBtn" class="secondary">Bersihkan</button>
         <button id="muatTurunBtn" class="secondary">Muat Turun</button>
       </div>
 
       <div id="hasil" class="hasil">Tiada semakan lagi</div>
+      <div id="deteksiGurisan" class="hasil small">Status gurisan: belum dianalisis</div>
     </section>
 
     <section class="panel">
@@ -85,7 +91,6 @@
         <div class="stat"><span class="label">Betul:</span> <span id="betul">0</span></div>
         <div class="stat"><span class="label">Salah:</span> <span id="salah">0</span></div>
         <div class="stat"><span class="label">Kadar Kejayaan:</span> <span id="kejayaan">0%</span></div>
-        <div class="stat"><span class="label">Purata Ketepatan:</span> <span id="ketepatan">0%</span></div>
         <div class="stat"><span class="label">Tahap Kemahiran:</span> <span id="tahap">Pemula</span></div>
       </div>
 
@@ -138,7 +143,7 @@
 
       <details>
         <summary>Contoh latihan (300 perkataan)</summary>
-        <p>Pilih “Rawak” atau “Ditentukan” untuk menggunakan senarai 300 perkataan asas latihan.</p>
+        <p>Pilih “Rawak” atau “Ditetapkan” untuk menggunakan senarai 300 perkataan asas latihan.</p>
         <ul id="contohList" class="contoh-list"></ul>
       </details>
     </section>
