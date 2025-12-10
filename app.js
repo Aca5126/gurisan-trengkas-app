@@ -65,10 +65,9 @@ canvas.addEventListener('touchend', endDraw);
 
 // ----- Garisan panduan (baseline) -----
 function drawGuideLine() {
-  // lukis atas latar putih tanpa memadam gurisan
   ctx.save();
   ctx.globalCompositeOperation = 'source-over';
-  ctx.strokeStyle = '#555555'; // kelabu gelap
+  ctx.strokeStyle = '#555555';
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(0, canvas.height / 2);
@@ -78,7 +77,6 @@ function drawGuideLine() {
 }
 
 window.addEventListener('load', () => {
-  // Pastikan canvas kosong dahulu
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGuideLine();
 });
@@ -107,7 +105,7 @@ penBtn.addEventListener('click', () => setTool('pen'));
 eraserBtn.addEventListener('click', () => setTool('eraser'));
 setTool('pen');
 
-// ----- Clear canvas (reset UI + baseline) -----
+// ----- Clear canvas -----
 clearBtn.addEventListener('click', () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   phonemesEl.textContent = '-';
@@ -118,7 +116,7 @@ clearBtn.addEventListener('click', () => {
   drawGuideLine();
 });
 
-// ----- Muat turun lukisan -----
+// ----- Download lukisan -----
 downloadBtn.addEventListener('click', () => {
   canvas.toBlob(blob => {
     const url = URL.createObjectURL(blob);
@@ -130,7 +128,7 @@ downloadBtn.addEventListener('click', () => {
   }, 'image/png');
 });
 
-// ----- Export CSV (berdasar sejarah) -----
+// ----- Export CSV -----
 exportCsvBtn.addEventListener('click', () => {
   if (!history.length) {
     alert('Tiada sejarah untuk dieksport. Buat beberapa kenalian dahulu.');
@@ -154,7 +152,7 @@ exportCsvBtn.addEventListener('click', () => {
   URL.revokeObjectURL(url);
 });
 
-// ----- Mock AI Translate (Pitman 2000 patah perkataan) -----
+// ----- Mock AI Translate -----
 function mockTranslate(imageDataUrl, hint) {
   const candidates = [
     'memandikan','pasukan','diputuskan','menguji','membantu',
@@ -164,7 +162,6 @@ function mockTranslate(imageDataUrl, hint) {
   ];
 
   let pick = candidates[Math.floor(Math.random()*candidates.length)];
-
   if (hint) {
     const h = hint.toLowerCase();
     const bias = candidates.find(c => c.startsWith(h));
@@ -195,11 +192,10 @@ function uniqueList(arr) {
   return arr.filter(x => (seen.has(x) ? false : (seen.add(x), true)));
 }
 
-// ----- Kenali (gunakan mock) -----
+// ----- Kenali -----
 recognizeBtn.addEventListener('click', () => {
   const imageDataUrl = canvas.toDataURL('image/png');
   const hint = targetWordEl.value?.trim();
-
   const { shorthand, fullText, confidence, candidates } = mockTranslate(imageDataUrl, hint);
 
   phonemesEl.textContent = shorthand;
@@ -217,7 +213,7 @@ recognizeBtn.addEventListener('click', () => {
   });
 });
 
-// ----- Panduan Trengkas (Pitman BM 2000) -----
+// ----- Panduan Trengkas -----
 const GUIDE = [
   { symbol: 'Garis ringan lurus →', phonem: 'k / t' },
   { symbol: 'Garis berat lurus ↓', phonem: 'b / p / d' },
@@ -235,5 +231,3 @@ function renderGuide() {
     `<div class="row"><strong>${item.symbol}</strong><span>${item.phonem}</span></div>`
   ).join('');
 }
-
-renderGuide();
