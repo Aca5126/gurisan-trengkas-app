@@ -47,6 +47,9 @@
   <footer><small>Berfungsi offline jika dipasang ke skrin utama. Data hanya di peranti anda.</small></footer>
 
   <script>
+    // Tetapkan URL backend (ubah ikut hosting anda)
+    window.API_BASE = 'http://localhost:8080';
+
     // Daftar service worker (PWA)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
