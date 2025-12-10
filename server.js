@@ -3,7 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import mongoose from 'mongoose';
 
 import translateRouter from './src/routes/translate.js';
 
@@ -23,21 +22,8 @@ app.use(cors({
 }));
 
 // Body parsers
-app.use(express.json({ limit: '10mb' })); // image dataURL boleh besar
+app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// MongoDB
-const uri = process.env.MONGODB_URI;
-if (!uri) {
-  console.error('MONGODB_URI tidak ditetapkan dalam .env');
-  process.exit(1);
-}
-mongoose.connect(uri, { autoIndex: true })
-  .then(() => console.log('MongoDB bersambung'))
-  .catch(err => {
-    console.error('Gagal sambung MongoDB:', err.message);
-    process.exit(1);
-  });
 
 // Routes
 app.use('/api/translate', translateRouter);
