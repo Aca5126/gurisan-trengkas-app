@@ -30,7 +30,7 @@ button#penBtn.active, button#eraserBtn.active { background: var(--primary); }
 button#downloadBtn { background:#006064; }
 
 #canvas {
-  background:#fff; /* pastikan latar putih */
+  background:#fff;
   width:100%; height:auto;
   border:1px solid #ccc; border-radius:8px;
   touch-action:none; display:block; margin-bottom:8px;
