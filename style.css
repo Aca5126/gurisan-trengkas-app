@@ -169,7 +169,6 @@ button:disabled {
   margin-top: 10px;
 }
 
-/* ✅ guidesCanvas mesti berada DI ATAS canvas */
 #guidesCanvas {
   position: absolute;
   top: 0;
@@ -178,10 +177,9 @@ button:disabled {
   height: 100%;
   z-index: 5;
   pointer-events: none;
-  background: transparent !important; /* ✅ WAJIB */
+  background: transparent !important;
 }
 
-/* ✅ canvas utama berada di bawah */
 #canvas {
   position: absolute;
   top: 0;
