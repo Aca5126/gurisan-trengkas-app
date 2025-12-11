@@ -1,93 +1,115 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Latihan Gurisan Trengkas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gurisan Trengkas – Pengenalan Gurisan</title>
 
-    <!-- Manifest untuk PWA -->
-    <link rel="manifest" href="manifest.webmanifest" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
 
-    <!-- Stylesheet utama -->
-    <link rel="stylesheet" href="style.css" />
+        h1 {
+            margin-bottom: 10px;
+        }
 
-    <!-- Icon -->
-    <link rel="icon" type="image/png" href="icons/icon-192.png" />
+        #canvasContainer {
+            position: relative;
+            width: 600px;
+            height: 240px;
+            margin: 20px auto;
+            border: 2px solid #333;
+            background: white;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 18px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #outputContainer {
+            margin-top: 30px;
+            text-align: left;
+            width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        #translatedText {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #syllableOutput {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #444;
+        }
+
+        #statusText {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #777;
+            font-style: italic;
+        }
+    </style>
 </head>
 
 <body>
-    <header>
-        <h1>Latihan Gurisan Trengkas</h1>
-        <p class="subtitle">
-            Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.
-        </p>
-    </header>
 
-    <main>
-        <section class="latihan-section">
-            <h2>Latihan Gurisan</h2>
+    <h1>Gurisan Trengkas – Pengenalan Gurisan</h1>
 
-            <!-- Pilihan Mode -->
-            <div class="mode-row">
-                <label><input type="radio" name="mode" value="bebas" id="modeBebas" checked /> Bebas</label>
-                <label><input type="radio" name="mode" value="rawak" id="modeRawak" /> Rawak</label>
-                <label><input type="radio" name="mode" value="ditetapkan" id="modeDitetapkan" /> Ditetapkan</label>
-            </div>
+    <!-- ✅ Dua canvas: guidesCanvas + drawingCanvas -->
+    <div id="canvasContainer">
+        <canvas id="guidesCanvas" width="600" height="240"></canvas>
+        <canvas id="drawingCanvas" width="600" height="240"></canvas>
+    </div>
 
-            <!-- Input Perkataan -->
-            <div class="word-input-row">
-                <input type="text" id="wordInput" placeholder="Contoh: lusa, buku, rumah..." />
-                <button id="btnPilihRawak">Pilih Rawak</button>
-            </div>
+    <!-- ✅ Semua butang yang app.js perlukan -->
+    <div id="controls">
+        <button id="penButton">Pen</button>
+        <button id="eraserButton">Eraser</button>
+        <button id="clearButton">Clear</button>
+        <button id="downloadButton">Download</button>
+        <button id="translateButton">Kenal Pasti</button>
+    </div>
 
-            <!-- Dropdown Perkataan -->
-            <div class="dropdown-row">
-                <select id="wordDropdown">
-                    <option value="">— Pilih perkataan —</option>
-                </select>
-            </div>
+    <!-- ✅ Status debug -->
+    <div id="statusText">Sedia untuk digunakan.</div>
 
-            <!-- Tools -->
-            <div class="tools-row">
-                <button id="btnPen" class="active">Pen</button>
-                <button id="btnPadam">Padam</button>
+    <!-- ✅ Output bahagian terjemahan -->
+    <div id="outputContainer">
+        <div><strong>Terjemahan:</strong></div>
+        <div id="translatedText">—</div>
 
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="showGuides" checked /> Garis panduan
-                </label>
+        <div style="margin-top: 15px;"><strong>Suku Kata:</strong></div>
+        <div id="syllableOutput">—</div>
+    </div>
 
-                <label class="checkbox-inline">
-                    <input type="checkbox" id="showBaseline" checked /> Baseline
-                </label>
-
-                <select id="baselineSpacing">
-                    <option value="0.5">Biasa (0.5 cm)</option>
-                    <option value="0.7">Luas (0.7 cm)</option>
-                    <option value="0.3">Rapat (0.3 cm)</option>
-                </select>
-            </div>
-
-            <!-- Kanvas -->
-            <div class="canvas-wrapper">
-                <canvas id="gurisanCanvas" width="600" height="240"></canvas>
-                <canvas id="guidesCanvas" width="600" height="240"></canvas>
-            </div>
-
-            <!-- Butang Aksi -->
-            <div class="action-row">
-                <button id="btnSemakGurisan">Semak Gurisan</button>
-                <button id="btnTekaSukuKata">Teka Suku Kata</button>
-                <button id="btnUlangSebutan">Ulang Sebutan</button>
-                <button id="btnBersihkan">Bersihkan</button>
-            </div>
-
-            <!-- Hasil Suku Kata -->
-            <div id="syllableResult" class="result-box"></div>
-        </section>
-    </main>
-
-    <!-- Script utama -->
-    <script src="words.js"></script>
+    <!-- ✅ app.js mesti berada di bawah semua elemen -->
     <script src="app.js"></script>
+
 </body>
 </html>
