@@ -1,180 +1,167 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gurisan Trengkas – Pengenalan Gurisan</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Latihan Gurisan Trengkas</title>
 
-    <style>
-        body {
-            font-family: "Inter", Arial, sans-serif;
-            background: #f5f7fb; /* ✅ pastel biru lembut */
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
+    <!-- Manifest untuk PWA -->
+    <link rel="manifest" href="manifest.webmanifest" />
 
-        h1 {
-            text-align: center;
-            margin-top: 40px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            color: #4a5568; /* ✅ pastel kelabu lembut */
-        }
+    <!-- Stylesheet utama -->
+    <link rel="stylesheet" href="style.css" />
 
-        /* ✅ Panel butang kecil elegan di atas kanan */
-        #topRightControls {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            z-index: 999;
-        }
-
-        .miniBtn {
-            font-size: 12px;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #d8d8d8;
-            background: #ffffff;
-            color: #444;
-            cursor: pointer;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        }
-
-        .miniBtn:hover {
-            background: #f0f4ff; /* ✅ pastel biru lembut */
-            border-color: #c0c8ff;
-        }
-
-        /* ✅ Container canvas pastel */
-        #canvasContainer {
-            position: relative;
-            width: 600px;
-            height: 240px;
-            margin: 40px auto 20px auto;
-            border: 2px solid #c3d4ff; /* ✅ pastel biru */
-            background: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* ✅ bayang lembut */
-        }
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        /* ✅ Butang utama pastel */
-        #controls {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #controls button {
-            padding: 10px 20px;
-            margin: 6px;
-            font-size: 15px;
-            border-radius: 8px;
-            border: 1px solid #cbd5e0;
-            background: #ffffff;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #333;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-        }
-
-        #controls button:hover {
-            background: #e8f0ff; /* ✅ pastel biru lembut */
-            border-color: #b4c6ff;
-        }
-
-        /* ✅ Status */
-        #statusText {
-            text-align: center;
-            margin-top: 10px;
-            font-size: 14px;
-            color: #6b7280;
-            font-style: italic;
-        }
-
-        /* ✅ Panel output pastel */
-        #outputContainer {
-            width: 600px;
-            margin: 30px auto;
-            background: #ffffff;
-            padding: 25px;
-            border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
-
-        #outputContainer strong {
-            color: #4a5568;
-        }
-
-        #translatedText {
-            font-size: 22px;
-            font-weight: 600;
-            margin-top: 8px;
-            color: #2d3748;
-        }
-
-        #syllableOutput {
-            margin-top: 12px;
-            font-size: 17px;
-            color: #4a5568;
-        }
-    </style>
+    <!-- Icon -->
+    <link rel="icon" type="image/png" href="icons/icon-192.png" />
 </head>
 
 <body>
 
-    <h1>Gurisan Trengkas – Pengenalan Gurisan</h1>
+    <!-- ✅ HEADER -->
+    <header class="header">
+        <div class="brand">
+            <div class="logo">✏️</div>
+            <div>
+                <h1>Latihan Gurisan Trengkas</h1>
+                <p class="subtitle">
+                    Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.
+                </p>
+            </div>
+        </div>
 
-    <!-- ✅ Panel butang kecil elegan pastel -->
-    <div id="topRightControls">
-        <button class="miniBtn" id="muteButton">Mute</button>
-        <button class="miniBtn" id="saveButton">Simpan</button>
-        <button class="miniBtn" id="loadButton">Muat</button>
-        <button class="miniBtn" id="helpButton">Bantuan</button>
-        <button class="miniBtn" id="settingsButton">Tetapan</button>
-    </div>
+        <!-- ✅ BUTANG KECIL MENEGAK (ELEGAN) -->
+        <div class="actions" style="flex-direction: column; align-items: flex-end;">
+            <button class="secondary miniBtn" id="muteButton">Mute</button>
+            <button class="secondary miniBtn" id="saveButton">Simpan</button>
+            <button class="secondary miniBtn" id="loadButton">Muat</button>
+            <button class="secondary miniBtn" id="helpButton">Bantuan</button>
+            <button class="secondary miniBtn" id="settingsButton">Tetapan</button>
+        </div>
+    </header>
 
-    <!-- ✅ Dua canvas pastel -->
-    <div id="canvasContainer">
-        <canvas id="guidesCanvas" width="600" height="240"></canvas>
-        <canvas id="drawingCanvas" width="600" height="240"></canvas>
-    </div>
+    <!-- ✅ LAYOUT UTAMA -->
+    <main class="layout">
 
-    <!-- ✅ Butang utama pastel -->
-    <div id="controls">
-        <button id="penButton">Pen</button>
-        <button id="eraserButton">Eraser</button>
-        <button id="clearButton">Clear</button>
-        <button id="downloadButton">Download</button>
-        <button id="translateButton">Kenal Pasti</button>
-    </div>
+        <!-- ✅ PANEL LATIHAN -->
+        <section class="panel latihan-section">
 
-    <!-- ✅ Status -->
-    <div id="statusText">Sedia untuk digunakan.</div>
+            <h2>Latihan Gurisan</h2>
 
-    <!-- ✅ Output pastel -->
-    <div id="outputContainer">
-        <div><strong>Terjemahan:</strong></div>
-        <div id="translatedText">—</div>
+            <!-- Pilihan Mode -->
+            <div class="modes">
+                <label><input type="radio" name="mode" value="bebas" id="modeBebas" checked /> Bebas</label>
+                <label><input type="radio" name="mode" value="rawak" id="modeRawak" /> Rawak</label>
+                <label><input type="radio" name="mode" value="ditetapkan" id="modeDitetapkan" /> Ditetapkan</label>
+            </div>
 
-        <div style="margin-top: 18px;"><strong>Suku Kata:</strong></div>
-        <div id="syllableOutput">—</div>
-    </div>
+            <!-- Input Perkataan -->
+            <div class="target-row">
+                <input type="text" id="wordInput" placeholder="Contoh: lusa, buku, rumah..." />
+                <button id="btnPilihRawak" class="secondary">Pilih Rawak</button>
+            </div>
 
-    <!-- ✅ app.js mesti di bawah semua elemen -->
+            <!-- Dropdown Perkataan -->
+            <div class="target-row" style="margin-top: 8px;">
+                <select id="wordDropdown">
+                    <option value="">— Pilih perkataan —</option>
+                </select>
+            </div>
+
+            <!-- Tools -->
+            <div class="canvas-toolbar">
+                <button id="btnPen" class="primary">Pen</button>
+                <button id="btnPadam" class="secondary">Padam</button>
+
+                <label><input type="checkbox" id="showGuides" checked /> Garis panduan</label>
+                <label><input type="checkbox" id="showBaseline" checked /> Baseline</label>
+
+                <select id="baselineSpacing">
+                    <option value="0.5">Biasa (0.5 cm)</option>
+                    <option value="0.7">Luas (0.7 cm)</option>
+                    <option value="0.3">Rapat (0.3 cm)</option>
+                </select>
+            </div>
+
+            <!-- ✅ KANVAS -->
+            <div class="canvas-wrap">
+                <canvas id="guidesCanvas"></canvas>
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <!-- Butang Aksi -->
+            <div class="canvas-actions">
+                <button id="btnSemakGurisan" class="primary">Semak Gurisan</button>
+                <button id="btnTekaSukuKata" class="secondary">Teka Suku Kata</button>
+                <button id="btnUlangSebutan" class="secondary">Ulang Sebutan</button>
+                <button id="btnBersihkan" class="danger">Bersihkan</button>
+            </div>
+
+            <!-- Hasil -->
+            <div id="syllableResult" class="hasil"></div>
+
+        </section>
+
+        <!-- ✅ PANEL SISI (REKOD PRESTASI + PANDUAN) -->
+        <aside class="side-panel">
+
+            <!-- Rekod Prestasi -->
+            <div class="panel rekod-prestasi">
+                <h2>Rekod Prestasi</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-green">
+                        <div class="stat-title">Betul</div>
+                        <div class="stat-value" id="statBetul">0</div>
+                        <div class="stat-subtitle">Gurisan tepat</div>
+                    </div>
+
+                    <div class="stat-card stat-red">
+                        <div class="stat-title">Salah</div>
+                        <div class="stat-value" id="statSalah">0</div>
+                        <div class="stat-subtitle">Perlu diperbaiki</div>
+                    </div>
+
+                    <div class="stat-card stat-blue wide">
+                        <div class="stat-title">Jumlah Latihan</div>
+                        <div class="stat-value" id="statJumlah">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panduan Trengkas -->
+            <div class="panel panduan-trengkas">
+                <h2>Panduan Trengkas</h2>
+                <p class="panduan-intro">Rujukan ringkas untuk bentuk gurisan asas.</p>
+
+                <table class="panduan-table">
+                    <tr><th>Bunyi</th><th>Gurisan</th></tr>
+                    <tr><td>P</td><td>Garis nipis menegak</td></tr>
+                    <tr><td>B</td><td>Garis tebal menegak</td></tr>
+                    <tr><td>T</td><td>Garis nipis mendatar</td></tr>
+                    <tr><td>D</td><td>Garis tebal mendatar</td></tr>
+                </table>
+
+                <div class="jenis-gurisan">
+                    <h3>Jenis Gurisan</h3>
+                    <ul>
+                        <li>Nipis = konsonan tak bersuara</li>
+                        <li>Tebal = konsonan bersuara</li>
+                        <li>Arah gurisan menentukan bunyi</li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        © 2025 Latihan Gurisan Trengkas — Dibangunkan untuk pembelajaran Pitman 2000 Malaysia.
+    </footer>
+
+    <!-- Scripts -->
+    <script src="words.js"></script>
     <script src="app.js"></script>
 
 </body>
