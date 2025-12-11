@@ -89,14 +89,18 @@ function resizeCanvas() {
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
 
-  // ✅ Set saiz sebenar canvas berdasarkan CSS × DPR
+  // ✅ Jika rect = 0, jangan resize (elak hilang garisan)
+  if (rect.width === 0 || rect.height === 0) {
+    console.warn("resizeCanvas skipped: rect=0");
+    return;
+  }
+
   canvas.width = rect.width * dpr;
   canvas.height = rect.height * dpr;
 
   guidesCanvas.width = rect.width * dpr;
   guidesCanvas.height = rect.height * dpr;
 
-  // ✅ Pastikan transform diset selepas width/height
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   guidesCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
