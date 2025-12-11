@@ -72,34 +72,43 @@ function resizeCanvas() {
 function drawGuides() {
   if (!guidesCanvas || !guidesCtx) return;
 
-  const rect = guidesCanvas.getBoundingClientRect();
-  const w = rect.width;
-  const h = rect.height;
+  const w = guidesCanvas.width;
+  const h = guidesCanvas.height;
 
+  // ✅ Sentiasa clear canvas
   guidesCtx.clearRect(0, 0, w, h);
 
+  const showGuides = document.getElementById("toggleGuides").checked;
+  const showBaseline = document.getElementById("toggleBaseline").checked;
+
+  // ✅ Jika kedua-dua OFF → terus keluar
+  if (!showGuides && !showBaseline) return;
+
   // ✅ Garis putus-putus atas & bawah
-  const yTop = h * 0.25;
-  const yBot = h * 0.75;
+  if (showGuides) {
+    const yTop = h * 0.25;
+    const yBot = h * 0.75;
 
-  guidesCtx.strokeStyle = '#cfd8dc';
-  guidesCtx.setLineDash([8, 8]);
-  guidesCtx.lineWidth = 1;
+    guidesCtx.strokeStyle = '#cfd8dc';
+    guidesCtx.setLineDash([8, 8]);
+    guidesCtx.lineWidth = 1;
 
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yTop); guidesCtx.lineTo(w, yTop); guidesCtx.stroke();
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
+    guidesCtx.beginPath(); guidesCtx.moveTo(0, yTop); guidesCtx.lineTo(w, yTop); guidesCtx.stroke();
+    guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
+  }
 
-  // ✅ Baseline natural (tengah)
-  const yBase = h * 0.70;
+  // ✅ Baseline
+  if (showBaseline) {
+    const yBase = h * 0.70; // baseline di antara dua garis putus-putus
 
-  guidesCtx.setLineDash([]);
-  guidesCtx.strokeStyle = '#9e9e9e';
-  guidesCtx.lineWidth = 2.2;
+    guidesCtx.setLineDash([]);
+    guidesCtx.strokeStyle = '#9e9e9e';
+    guidesCtx.lineWidth = 2.2;
 
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yBase); guidesCtx.lineTo(w, yBase); guidesCtx.stroke();
-
-  dlog('drawGuides() done', { yTop, yBase, yBot });
+    guidesCtx.beginPath(); guidesCtx.moveTo(0, yBase); guidesCtx.lineTo(w, yBase); guidesCtx.stroke();
+  }
 }
+
 // =======================================
 // LOGIK LUKIS (PEN & PEMADAM)
 // =======================================
