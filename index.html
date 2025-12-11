@@ -44,18 +44,19 @@
             <label><input type="radio" name="mode" value="ditetapkan" id="modeDitetapkan"> Ditetapkan</label>
         </div>
 
-        <!-- ✅ Input perkataan -->
-        <div class="target-row">
-            <input type="text" id="perkataan" placeholder="Contoh: lusa, buku, rumah...">
-            <button id="pilihRawakBtn" class="secondary">Pilih Rawak</button>
-        </div>
+<!-- ✅ Input Box Utama (boleh taip + dropdown + rawak) -->
+<div class="input-wrapper">
+
+    <div class="input-dropdown-container">
+        <input type="text" id="perkataan" placeholder="Taip atau pilih perkataan…">
+        <span class="dropdown-icon" id="dropdownToggle">▼</span>
 
         <!-- ✅ Dropdown -->
-        <div class="target-row" style="margin-top: 8px;">
-            <select id="senaraiDitETapkan">
-                <option value="">— Pilih perkataan —</option>
-            </select>
-        </div>
+        <div class="dropdown-list" id="dropdownList"></div>
+    </div>
+
+    <button id="pilihRawakBtn" class="secondary">Rawak</button>
+</div>
 
         <!-- ✅ Toolbar -->
         <div class="canvas-toolbar">
