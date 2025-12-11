@@ -78,7 +78,7 @@ function drawGuides() {
   guidesCtx.clearRect(0, 0, w, h);
 
   const yTop = h * 0.25;
-  const yBase = h * 0.5;
+  const yBase = h * 0.88;
   const yBot = h * 0.75;
 
   // Garis putus-putus atas & bawah
