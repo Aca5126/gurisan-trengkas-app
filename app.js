@@ -81,7 +81,7 @@ function drawGuides() {
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
 
   // Baseline
-  const yBase = h * 0.60;
+  const yBase = h * 0.70;
 
   guidesCtx.setLineDash([]);
   guidesCtx.strokeStyle = '#9e9e9e';
@@ -652,3 +652,5 @@ function getMode() {
 function getPerkataan() {
     return inputBox.value.trim();
 }
+
+window.addEventListener("load", setupCanvas);
