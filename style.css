@@ -1,63 +1,39 @@
 /* ============================================================
-   BUTANG PASTEL + NEUMORPHISM (MODEN & SEKATA)
+   BUTANG PASTEL LEMBUT (SAFE — TIDAK GANGGU LAYOUT)
    ============================================================ */
 
-button {
-    font-family: inherit;
-    font-size: 14px;
-    padding: 10px 16px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
+button.primary,
+button.secondary,
+button.danger,
+button.miniBtn {
+    border-radius: 8px;
     font-weight: 600;
-    transition: all 0.2s ease;
-    background: #eef9f8; /* pastel lembut */
-    color: #0a6f6d;
-    box-shadow:
-        4px 4px 8px rgba(0,0,0,0.08),
-        -4px -4px 8px rgba(255,255,255,0.9);
+    padding: 10px 16px;
+    font-size: 14px;
+    transition: 0.2s ease;
 }
 
-/* Hover: timbul sedikit */
-button:hover {
-    box-shadow:
-        2px 2px 6px rgba(0,0,0,0.06),
-        -2px -2px 6px rgba(255,255,255,0.9);
-    transform: translateY(-1px);
-}
-
-/* Active: masuk ke dalam */
-button:active {
-    box-shadow:
-        inset 3px 3px 6px rgba(0,0,0,0.12),
-        inset -3px -3px 6px rgba(255,255,255,0.9);
-    transform: translateY(0);
-}
-
-/* ============================================================
-   VARIAN BUTANG
-   ============================================================ */
-
-/* Primary — Teal lembut */
+/* PRIMARY — TEAL PASTEL */
 button.primary {
     background: #dff7f6;
     color: #006b69;
-    box-shadow:
-        4px 4px 8px rgba(0,0,0,0.08),
-        -4px -4px 8px rgba(255,255,255,0.95);
+    border: 1px solid #b8e7e5;
 }
 button.primary:hover {
     background: #d4f3f2;
 }
 
-/* Secondary — Putih pastel */
+/* SECONDARY — PUTIH PASTEL */
 button.secondary {
     background: #ffffff;
     color: #0a6f6d;
-    border: 1px solid #d9e7e6;
+    border: 1px solid #cfe7e6;
+}
+button.secondary:hover {
+    background: #f3fdfc;
 }
 
-/* Danger — Merah pastel */
+/* DANGER — MERAH PASTEL */
 button.danger {
     background: #ffecec;
     color: #b00020;
@@ -67,50 +43,20 @@ button.danger:hover {
     background: #ffdede;
 }
 
-/* Mini buttons (header) */
+/* MINI BUTTONS (HEADER) */
 button.miniBtn {
-    padding: 6px 10px;
-    font-size: 12px;
-    border-radius: 8px;
     background: #ffffff;
     color: #444;
-    box-shadow:
-        3px 3px 6px rgba(0,0,0,0.08),
-        -3px -3px 6px rgba(255,255,255,0.9);
+    border: 1px solid #dcdcdc;
+    padding: 6px 10px;
+    font-size: 12px;
 }
 button.miniBtn:hover {
     background: #f3f3f3;
 }
 
-/* ============================================================
-   CANVAS ACTIONS (bawah canvas)
-   ============================================================ */
-
-.canvas-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 14px;
-    flex-wrap: wrap;
-}
-
-.canvas-actions button {
-    flex: 1;
-    min-width: 120px;
-}
-
-/* Tong sampah */
-#bersihBtn {
-    flex: 0 0 52px;
-    padding: 10px;
-    font-size: 18px;
-}
-
-/* ============================================================
-   DISABLED STATE
-   ============================================================ */
-
+/* DISABLED */
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    box-shadow: none;
 }
