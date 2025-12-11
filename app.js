@@ -659,3 +659,6 @@ function getMode() {
 function getPerkataan() {
     return inputBox.value.trim();
 }
+
+document.getElementById("toggleGuides").addEventListener("change", drawGuides);
+document.getElementById("toggleBaseline").addEventListener("change", drawGuides);
