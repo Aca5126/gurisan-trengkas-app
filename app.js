@@ -49,8 +49,6 @@ function setupCanvas() {
 // =========================
 
 let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
 
 function startDrawing(e) {
   isDrawing = true;
