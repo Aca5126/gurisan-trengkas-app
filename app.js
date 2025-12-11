@@ -221,22 +221,19 @@ function kemaskiniRekod(status, ketepatan) {
 }
 
 // =======================================
-// SEMAKAN GURISAN & BACKEND
+// SEMAKAN GURISAN & BACKEND (VERSI BAHARU)
 // =======================================
 
 async function semakGurisan() {
   if (!canvas) return;
 
-  const perkataanInput = document.getElementById('perkataan');
   const hasil = document.getElementById('hasil');
   const deteksi = document.getElementById('deteksiGurisan');
 
-  const perkataan = perkataanInput.value.trim();
-  if (!perkataan) {
-    alert('Sila masukkan atau pilih perkataan terlebih dahulu.');
-    return;
-  }
+  const perkataan = getPerkataan();
+  const mode = getMode();
 
+async function hantarKeBackend(perkataan, hasil, deteksi) {
   const dataUrl = canvas.toDataURL('image/png');
 
   try {
@@ -256,20 +253,62 @@ async function semakGurisan() {
     const status = data.status || 'tidak pasti';
     const ketepatan = typeof data.ketepatan === 'number' ? data.ketepatan : null;
 
-    if (hasil) hasil.textContent = mesej;
+    hasil.textContent = mesej;
+
     let statusText = `Status gurisan: ${status}`;
     if (ketepatan !== null) statusText += ` (${ketepatan}%)`;
-    if (deteksi) deteksi.textContent = statusText;
+    deteksi.textContent = statusText;
 
-    // Hanya kira rekod jika bukan ralat
+    // ✅ Kemas kini rekod prestasi
     if (status === 'betul' || status === 'salah' || status === 'tidak pasti') {
       kemaskiniRekod(status, ketepatan ?? 0);
     }
 
   } catch (err) {
     console.error(err);
-    if (hasil) hasil.textContent = 'Ralat ketika menyemak gurisan.';
-    if (deteksi) deteksi.textContent = 'Status gurisan: ralat.';
+    hasil.textContent = 'Ralat ketika menyemak gurisan.';
+    deteksi.textContent = 'Status gurisan: ralat.';
+  }
+}
+  
+  // ============================
+  // ✅ MODE BEBAS
+  // ============================
+  if (mode === "bebas") {
+    if (!perkataan) {
+      hasil.textContent = "Tidak dapat dikenal pasti.";
+      deteksi.textContent = "Gurisan tidak dapat dikenal pasti.";
+      return;
+    }
+
+    // Jika ada input → terus hantar ke backend
+    return await hantarKeBackend(perkataan, hasil, deteksi);
+  }
+
+  // ============================
+  // ✅ MODE RAWAK
+  // ============================
+  if (mode === "rawak") {
+    if (!perkataan) {
+      hasil.textContent = "Sila tekan butang Rawak dahulu.";
+      deteksi.textContent = "Input kosong.";
+      return;
+    }
+
+    return await hantarKeBackend(perkataan, hasil, deteksi);
+  }
+
+  // ============================
+  // ✅ MODE DITETAPKAN
+  // ============================
+  if (mode === "ditetapkan") {
+    if (!perkataan) {
+      hasil.textContent = "Sila pilih perkataan dari senarai.";
+      deteksi.textContent = "Input kosong.";
+      return;
+    }
+
+    return await hantarKeBackend(perkataan, hasil, deteksi);
   }
 }
 
@@ -592,3 +631,15 @@ document.addEventListener("click", (e) => {
         dropdownList.style.display = "none";
     }
 });
+
+/* ============================================================
+   LOGIK MODE BAHARU (BEBAS / RAWAK / DITETAPKAN)
+   ============================================================ */
+
+function getMode() {
+    return document.querySelector("input[name='mode']:checked").value;
+}
+
+function getPerkataan() {
+    return inputBox.value.trim();
+}
