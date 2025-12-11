@@ -89,8 +89,8 @@ function drawGuides() {
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yTop); guidesCtx.lineTo(w, yTop); guidesCtx.stroke();
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
 
-  // ✅ Baseline natural (lebih bawah)
-  const yBase = h * 0.88;
+  // ✅ Baseline natural (tengah)
+  const yBase = h * 0.70;
 
   guidesCtx.setLineDash([]);
   guidesCtx.strokeStyle = '#9e9e9e';
