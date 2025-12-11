@@ -71,32 +71,35 @@ function resizeCanvas() {
 
 function drawGuides() {
   if (!guidesCanvas || !guidesCtx) return;
+
   const rect = guidesCanvas.getBoundingClientRect();
   const w = rect.width;
   const h = rect.height;
 
   guidesCtx.clearRect(0, 0, w, h);
 
+  // ✅ Garis putus-putus atas & bawah
   const yTop = h * 0.25;
-  const yBase = h * 0.88;
   const yBot = h * 0.75;
 
-  // Garis putus-putus atas & bawah
   guidesCtx.strokeStyle = '#cfd8dc';
   guidesCtx.setLineDash([8, 8]);
   guidesCtx.lineWidth = 1;
+
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yTop); guidesCtx.lineTo(w, yTop); guidesCtx.stroke();
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
 
-  // Baseline solid
+  // ✅ Baseline natural (lebih bawah)
+  const yBase = h * 0.88;
+
   guidesCtx.setLineDash([]);
   guidesCtx.strokeStyle = '#9e9e9e';
-  guidesCtx.lineWidth = 2;
+  guidesCtx.lineWidth = 2.2;
+
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yBase); guidesCtx.lineTo(w, yBase); guidesCtx.stroke();
 
   dlog('drawGuides() done', { yTop, yBase, yBot });
 }
-
 // =======================================
 // LOGIK LUKIS (PEN & PEMADAM)
 // =======================================
@@ -132,10 +135,20 @@ function draw(e) {
   e.preventDefault();
 
   const pos = getCanvasPos(e);
+
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
-  ctx.lineWidth = 3;
-  ctx.strokeStyle = erasing ? '#ffffff' : '#000000';
+
+  // ✅ Saiz pen & pemadam
+  ctx.lineWidth = erasing ? 28 : 3;
+
+  // ✅ Pemadam licin (destination-out)
+  if (erasing) {
+    ctx.globalCompositeOperation = "destination-out";
+  } else {
+    ctx.globalCompositeOperation = "source-over";
+    ctx.strokeStyle = "#000000";
+  }
 
   ctx.beginPath();
   ctx.moveTo(lastX, lastY);
@@ -144,12 +157,6 @@ function draw(e) {
 
   lastX = pos.x;
   lastY = pos.y;
-}
-
-function stopDrawing(e) {
-  if (!drawing) return;
-  e && e.preventDefault();
-  drawing = false;
 }
 
 function attachDrawingEvents() {
