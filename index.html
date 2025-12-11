@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: "Inter", Arial, sans-serif;
-            background: #f7f7f7;
+            background: #f5f7fb; /* ✅ pastel biru lembut */
             margin: 0;
             padding: 0;
             color: #333;
@@ -19,13 +19,14 @@
             margin-top: 40px;
             font-weight: 600;
             letter-spacing: 0.5px;
+            color: #4a5568; /* ✅ pastel kelabu lembut */
         }
 
         /* ✅ Panel butang kecil elegan di atas kanan */
         #topRightControls {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             display: flex;
             flex-direction: column;
             gap: 8px;
@@ -36,31 +37,32 @@
             font-size: 12px;
             padding: 6px 12px;
             border-radius: 6px;
-            border: 1px solid #d0d0d0;
+            border: 1px solid #d8d8d8;
             background: #ffffff;
-            color: #333;
+            color: #444;
             cursor: pointer;
             font-weight: 500;
             letter-spacing: 0.3px;
             transition: all 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
 
         .miniBtn:hover {
-            background: #f2f2f2;
-            border-color: #c0c0c0;
+            background: #f0f4ff; /* ✅ pastel biru lembut */
+            border-color: #c0c8ff;
         }
 
-        /* ✅ Container canvas */
+        /* ✅ Container canvas pastel */
         #canvasContainer {
             position: relative;
             width: 600px;
             height: 240px;
             margin: 40px auto 20px auto;
-            border: 2px solid #333;
-            background: white;
-            border-radius: 8px;
+            border: 2px solid #c3d4ff; /* ✅ pastel biru */
+            background: #ffffff;
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* ✅ bayang lembut */
         }
 
         canvas {
@@ -69,7 +71,7 @@
             left: 0;
         }
 
-        /* ✅ Butang utama */
+        /* ✅ Butang utama pastel */
         #controls {
             text-align: center;
             margin-top: 20px;
@@ -79,15 +81,18 @@
             padding: 10px 20px;
             margin: 6px;
             font-size: 15px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            background: white;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            background: #ffffff;
             cursor: pointer;
             transition: 0.2s;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
         }
 
         #controls button:hover {
-            background: #f0f0f0;
+            background: #e8f0ff; /* ✅ pastel biru lembut */
+            border-color: #b4c6ff;
         }
 
         /* ✅ Status */
@@ -95,30 +100,36 @@
             text-align: center;
             margin-top: 10px;
             font-size: 14px;
-            color: #777;
+            color: #6b7280;
             font-style: italic;
         }
 
-        /* ✅ Panel output */
+        /* ✅ Panel output pastel */
         #outputContainer {
             width: 600px;
             margin: 30px auto;
             background: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            padding: 25px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        #outputContainer strong {
+            color: #4a5568;
         }
 
         #translatedText {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 600;
-            margin-top: 5px;
+            margin-top: 8px;
+            color: #2d3748;
         }
 
         #syllableOutput {
-            margin-top: 10px;
-            font-size: 16px;
+            margin-top: 12px;
+            font-size: 17px;
+            color: #4a5568;
         }
     </style>
 </head>
@@ -127,7 +138,7 @@
 
     <h1>Gurisan Trengkas – Pengenalan Gurisan</h1>
 
-    <!-- ✅ Panel butang kecil elegan -->
+    <!-- ✅ Panel butang kecil elegan pastel -->
     <div id="topRightControls">
         <button class="miniBtn" id="muteButton">Mute</button>
         <button class="miniBtn" id="saveButton">Simpan</button>
@@ -136,13 +147,13 @@
         <button class="miniBtn" id="settingsButton">Tetapan</button>
     </div>
 
-    <!-- ✅ Dua canvas -->
+    <!-- ✅ Dua canvas pastel -->
     <div id="canvasContainer">
         <canvas id="guidesCanvas" width="600" height="240"></canvas>
         <canvas id="drawingCanvas" width="600" height="240"></canvas>
     </div>
 
-    <!-- ✅ Butang utama -->
+    <!-- ✅ Butang utama pastel -->
     <div id="controls">
         <button id="penButton">Pen</button>
         <button id="eraserButton">Eraser</button>
@@ -154,12 +165,12 @@
     <!-- ✅ Status -->
     <div id="statusText">Sedia untuk digunakan.</div>
 
-    <!-- ✅ Output -->
+    <!-- ✅ Output pastel -->
     <div id="outputContainer">
         <div><strong>Terjemahan:</strong></div>
         <div id="translatedText">—</div>
 
-        <div style="margin-top: 15px;"><strong>Suku Kata:</strong></div>
+        <div style="margin-top: 18px;"><strong>Suku Kata:</strong></div>
         <div id="syllableOutput">—</div>
     </div>
 
