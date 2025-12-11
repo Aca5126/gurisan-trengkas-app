@@ -41,7 +41,7 @@ function setupCanvas() {
 
   resizeCanvas();
   attachDrawingEvents();
-  drawGuides(); // ✅ lukis sekali masa mula
+  drawGuides(); // ✅ WAJIB ADA
 }
 
 function resizeCanvas() {
