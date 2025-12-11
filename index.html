@@ -1,168 +1,192 @@
-<!DOCTYPE html>
-<html lang="ms">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Latihan Gurisan Trengkas</title>
+<header class="header">
+    <div class="brand">
+        <div class="logo">✏️</div>
+        <div>
+            <h1>Latihan Gurisan Trengkas</h1>
+            <p class="subtitle">
+                Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.
+            </p>
+        </div>
+    </div>
 
-    <!-- Manifest untuk PWA -->
-    <link rel="manifest" href="manifest.webmanifest" />
+    <!-- ✅ Butang kecil pastel kelabu, menegak, ID sepadan app.js -->
+    <div class="actions" style="flex-direction: column; align-items: flex-end;">
+        <button class="miniBtn" id="toggleSpeakerBtn">🔊</button>
+        <button class="miniBtn" id="saveButton">Simpan</button>
+        <button class="miniBtn" id="loadButton">Muat</button>
+        <button class="miniBtn" id="helpButton">Bantuan</button>
+        <button class="miniBtn" id="settingsButton">Tetapan</button>
+    </div>
+</header>
 
-    <!-- Stylesheet utama -->
-    <link rel="stylesheet" href="style.css" />
+<section class="panel latihan-section">
 
-    <!-- Icon -->
-    <link rel="icon" type="image/png" href="icons/icon-192.png" />
-</head>
+    <h2>Latihan Gurisan</h2>
 
-<body>
+    <!-- ✅ Pilihan Mode (ID sepadan app.js) -->
+    <div class="modes">
+        <label><input type="radio" name="mode" value="bebas" id="modeBebas" checked> Bebas</label>
+        <label><input type="radio" name="mode" value="rawak" id="modeRawak"> Rawak</label>
+        <label><input type="radio" name="mode" value="ditetapkan" id="modeDitetapkan"> Ditetapkan</label>
+    </div>
 
-    <!-- ✅ HEADER -->
-    <header class="header">
-        <div class="brand">
-            <div class="logo">✏️</div>
-            <div>
-                <h1>Latihan Gurisan Trengkas</h1>
-                <p class="subtitle">
-                    Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.
-                </p>
-            </div>
+    <!-- ✅ Input Perkataan (ID sepadan app.js) -->
+    <div class="target-row">
+        <input type="text" id="perkataan" placeholder="Contoh: lusa, buku, rumah...">
+        <button id="pilihRawakBtn" class="secondary">Pilih Rawak</button>
+    </div>
+
+    <!-- ✅ Dropdown Perkataan (ID sepadan app.js) -->
+    <div class="target-row" style="margin-top: 8px;">
+        <select id="senaraiDitETapkan">
+            <option value="">— Pilih perkataan —</option>
+        </select>
+    </div>
+
+<!-- ✅ TOOLBAR (ID sepadan app.js) -->
+<div class="canvas-toolbar">
+
+    <!-- Pen -->
+    <button id="penBtn" class="primary">Pen</button>
+
+    <!-- Padam -->
+    <button id="padamBtn" class="secondary">Padam</button>
+
+    <!-- Toggle Guides -->
+    <label>
+        <input type="checkbox" id="toggleGuides" checked>
+        Garis panduan
+    </label>
+
+    <!-- Toggle Baseline -->
+    <label>
+        <input type="checkbox" id="toggleBaseline" checked>
+        Baseline
+    </label>
+
+    <!-- Label baseline (app.js kawal visibility) -->
+    <span id="labelBaseline" style="font-size: 12px; color: #666;">Baseline aktif</span>
+
+</div>
+
+<!-- ✅ TOOLBAR (ID sepadan app.js) -->
+<div class="canvas-toolbar">
+
+    <!-- Pen -->
+    <button id="penBtn" class="primary">Pen</button>
+
+    <!-- Padam -->
+    <button id="padamBtn" class="secondary">Padam</button>
+
+    <!-- Toggle Guides -->
+    <label>
+        <input type="checkbox" id="toggleGuides" checked>
+        Garis panduan
+    </label>
+
+    <!-- Toggle Baseline -->
+    <label>
+        <input type="checkbox" id="toggleBaseline" checked>
+        Baseline
+    </label>
+
+    <!-- Label baseline (app.js kawal visibility) -->
+    <span id="labelBaseline" style="font-size: 12px; color: #666;">Baseline aktif</span>
+
+</div>
+
+<!-- ✅ ACTION BUTTONS (ID sepadan app.js) -->
+<div class="canvas-actions">
+
+    <!-- Semak Gurisan (dipanjangkan melalui CSS nanti) -->
+    <button id="semakBtn" class="primary" style="flex: 1;">Semak Gurisan</button>
+
+    <!-- Teka Suku Kata -->
+    <button id="tekaSukuKataBtn" class="secondary">Teka Suku Kata</button>
+
+    <!-- Ulang Sebutan -->
+    <button id="ulangSebutanBtn" class="secondary">Ulang Sebutan</button>
+
+    <!-- Bersihkan (ikon tong sampah) -->
+    <button id="bersihBtn" class="danger">🗑️</button>
+
+</div>
+
+<!-- ✅ HASIL SEMAKAN (ID sepadan app.js) -->
+<div class="hasil" id="hasil">Tiada semakan lagi</div>
+<div class="hasil small" id="deteksiGurisan">Status gurisan: belum dianalisis</div>
+
+<!-- ✅ REKOD PRESTASI (ID sepadan app.js) -->
+<div class="panel rekod-prestasi">
+    <h2>Rekod Prestasi</h2>
+
+    <div class="stats-grid">
+
+        <div class="stat-card stat-green">
+            <div class="stat-title">Betul</div>
+            <div class="stat-value" id="betul">0</div>
+            <div class="stat-subtitle">Gurisan tepat</div>
         </div>
 
-        <!-- ✅ BUTANG KECIL MENEGAK (ELEGAN) -->
-        <div class="actions" style="flex-direction: column; align-items: flex-end;">
-            <button class="secondary miniBtn" id="muteButton">Mute</button>
-            <button class="secondary miniBtn" id="saveButton">Simpan</button>
-            <button class="secondary miniBtn" id="loadButton">Muat</button>
-            <button class="secondary miniBtn" id="helpButton">Bantuan</button>
-            <button class="secondary miniBtn" id="settingsButton">Tetapan</button>
+        <div class="stat-card stat-red">
+            <div class="stat-title">Salah</div>
+            <div class="stat-value" id="salah">0</div>
+            <div class="stat-subtitle">Perlu diperbaiki</div>
         </div>
-    </header>
 
-    <!-- ✅ LAYOUT UTAMA -->
-    <main class="layout">
+        <div class="stat-card stat-blue wide">
+            <div class="stat-title">Kadar Kejayaan</div>
+            <div class="stat-value" id="kejayaan">0%</div>
+            <div class="stat-subtitle" id="kejayaanInfo">0 cubaan keseluruhan</div>
+        </div>
 
-        <!-- ✅ PANEL LATIHAN -->
-        <section class="panel latihan-section">
+        <div class="stat-card stat-purple wide">
+            <div class="stat-title">Purata Ketepatan</div>
+            <div class="stat-value" id="ketepatan">0%</div>
+            <div class="stat-subtitle">Ketepatan keseluruhan</div>
+        </div>
 
-            <h2>Latihan Gurisan</h2>
+        <div class="stat-card stat-yellow wide">
+            <div class="stat-title">Tahap</div>
+            <div class="stat-value" id="tahap">Pemula</div>
+            <div class="stat-subtitle">Penilaian automatik</div>
+        </div>
 
-            <!-- Pilihan Mode -->
-            <div class="modes">
-                <label><input type="radio" name="mode" value="bebas" id="modeBebas" checked /> Bebas</label>
-                <label><input type="radio" name="mode" value="rawak" id="modeRawak" /> Rawak</label>
-                <label><input type="radio" name="mode" value="ditetapkan" id="modeDitetapkan" /> Ditetapkan</label>
-            </div>
+    </div>
 
-            <!-- Input Perkataan -->
-            <div class="target-row">
-                <input type="text" id="wordInput" placeholder="Contoh: lusa, buku, rumah..." />
-                <button id="btnPilihRawak" class="secondary">Pilih Rawak</button>
-            </div>
+    <div style="margin-top: 12px; display: flex; gap: 8px;">
+        <button id="resetPrestasiBtn" class="danger">Reset</button>
+        <button id="exportCsvBtn" class="secondary">Export CSV</button>
+    </div>
+</div>
 
-            <!-- Dropdown Perkataan -->
-            <div class="target-row" style="margin-top: 8px;">
-                <select id="wordDropdown">
-                    <option value="">— Pilih perkataan —</option>
-                </select>
-            </div>
+<!-- ✅ PANDUAN TRENGKAS -->
+<div class="panel panduan-trengkas">
+    <h2>Panduan Trengkas</h2>
+    <p class="panduan-intro">Rujukan ringkas untuk bentuk gurisan asas.</p>
 
-            <!-- Tools -->
-            <div class="canvas-toolbar">
-                <button id="btnPen" class="primary">Pen</button>
-                <button id="btnPadam" class="secondary">Padam</button>
+    <table class="panduan-table">
+        <tr><th>Bunyi</th><th>Gurisan</th></tr>
+        <tr><td>P</td><td>Garis nipis menegak</td></tr>
+        <tr><td>B</td><td>Garis tebal menegak</td></tr>
+        <tr><td>T</td><td>Garis nipis mendatar</td></tr>
+        <tr><td>D</td><td>Garis tebal mendatar</td></tr>
+    </table>
 
-                <label><input type="checkbox" id="showGuides" checked /> Garis panduan</label>
-                <label><input type="checkbox" id="showBaseline" checked /> Baseline</label>
+    <div class="jenis-gurisan">
+        <h3>Jenis Gurisan</h3>
+        <ul>
+            <li>Nipis = konsonan tak bersuara</li>
+            <li>Tebal = konsonan bersuara</li>
+            <li>Arah gurisan menentukan bunyi</li>
+        </ul>
+    </div>
+</div>
 
-                <select id="baselineSpacing">
-                    <option value="0.5">Biasa (0.5 cm)</option>
-                    <option value="0.7">Luas (0.7 cm)</option>
-                    <option value="0.3">Rapat (0.3 cm)</option>
-                </select>
-            </div>
+<footer class="footer">
+    © 2025 Latihan Gurisan Trengkas — Dibangunkan untuk pembelajaran Pitman 2000 Malaysia.
+</footer>
 
-            <!-- ✅ KANVAS -->
-            <div class="canvas-wrap">
-                <canvas id="guidesCanvas"></canvas>
-                <canvas id="canvas"></canvas>
-            </div>
-
-            <!-- Butang Aksi -->
-            <div class="canvas-actions">
-                <button id="btnSemakGurisan" class="primary">Semak Gurisan</button>
-                <button id="btnTekaSukuKata" class="secondary">Teka Suku Kata</button>
-                <button id="btnUlangSebutan" class="secondary">Ulang Sebutan</button>
-                <button id="btnBersihkan" class="danger">Bersihkan</button>
-            </div>
-
-            <!-- Hasil -->
-            <div id="syllableResult" class="hasil"></div>
-
-        </section>
-
-        <!-- ✅ PANEL SISI (REKOD PRESTASI + PANDUAN) -->
-        <aside class="side-panel">
-
-            <!-- Rekod Prestasi -->
-            <div class="panel rekod-prestasi">
-                <h2>Rekod Prestasi</h2>
-
-                <div class="stats-grid">
-                    <div class="stat-card stat-green">
-                        <div class="stat-title">Betul</div>
-                        <div class="stat-value" id="statBetul">0</div>
-                        <div class="stat-subtitle">Gurisan tepat</div>
-                    </div>
-
-                    <div class="stat-card stat-red">
-                        <div class="stat-title">Salah</div>
-                        <div class="stat-value" id="statSalah">0</div>
-                        <div class="stat-subtitle">Perlu diperbaiki</div>
-                    </div>
-
-                    <div class="stat-card stat-blue wide">
-                        <div class="stat-title">Jumlah Latihan</div>
-                        <div class="stat-value" id="statJumlah">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Panduan Trengkas -->
-            <div class="panel panduan-trengkas">
-                <h2>Panduan Trengkas</h2>
-                <p class="panduan-intro">Rujukan ringkas untuk bentuk gurisan asas.</p>
-
-                <table class="panduan-table">
-                    <tr><th>Bunyi</th><th>Gurisan</th></tr>
-                    <tr><td>P</td><td>Garis nipis menegak</td></tr>
-                    <tr><td>B</td><td>Garis tebal menegak</td></tr>
-                    <tr><td>T</td><td>Garis nipis mendatar</td></tr>
-                    <tr><td>D</td><td>Garis tebal mendatar</td></tr>
-                </table>
-
-                <div class="jenis-gurisan">
-                    <h3>Jenis Gurisan</h3>
-                    <ul>
-                        <li>Nipis = konsonan tak bersuara</li>
-                        <li>Tebal = konsonan bersuara</li>
-                        <li>Arah gurisan menentukan bunyi</li>
-                    </ul>
-                </div>
-            </div>
-
-        </aside>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        © 2025 Latihan Gurisan Trengkas — Dibangunkan untuk pembelajaran Pitman 2000 Malaysia.
-    </footer>
-
-    <!-- Scripts -->
-    <script src="words.js"></script>
-    <script src="app.js"></script>
-
-</body>
-</html>
+<!-- ✅ SCRIPT WAJIB -->
+<script src="words.js"></script>
+<script src="app.js"></script>
