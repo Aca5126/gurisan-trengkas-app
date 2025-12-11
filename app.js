@@ -60,7 +60,7 @@ let lastResult = {
 
 // ==========================
 // Setup canvas + DPI scaling
-========================== */
+========================== 
 
 function setupCanvas() {
   const wrap = guidesCanvas.parentElement;
