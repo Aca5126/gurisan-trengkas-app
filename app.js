@@ -44,6 +44,45 @@ function setupCanvas() {
   drawGuides(); // ✅ lukis masa mula
 }
 
+// =========================
+// 2. FUNGSI LUKISAN
+// =========================
+
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+
+function startDrawing(e) {
+  isDrawing = true;
+  const rect = canvas.getBoundingClientRect();
+  lastX = (e.clientX - rect.left);
+  lastY = (e.clientY - rect.top);
+}
+
+function draw(e) {
+  if (!isDrawing) return;
+
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left);
+  const y = (e.clientY - rect.top);
+
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#000";
+
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(x, y);
+  ctx.stroke();
+
+  lastX = x;
+  lastY = y;
+}
+
+function stopDrawing() {
+  isDrawing = false;
+}
+
 function resizeCanvas() {
   if (!canvas || !guidesCanvas) return;
 
@@ -153,15 +192,30 @@ function draw(e) {
 }
 
 function attachDrawingEvents() {
-  // Mouse
-  canvas.addEventListener('mousedown', startDrawing);
-  canvas.addEventListener('mousemove', draw);
-  window.addEventListener('mouseup', stopDrawing);
+  // =========================
+  // MOUSE
+  // =========================
+  canvas.addEventListener("mousedown", startDrawing);
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", stopDrawing);
+  canvas.addEventListener("mouseleave", stopDrawing);
 
-  // Touch
-  canvas.addEventListener('touchstart', startDrawing, { passive: false });
-  canvas.addEventListener('touchmove', draw, { passive: false });
-  canvas.addEventListener('touchend', stopDrawing);
+  // =========================
+  // TOUCH (mobile)
+  // =========================
+  canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    startDrawing({ clientX: t.clientX, clientY: t.clientY });
+  }, { passive: false });
+
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    const t = e.touches[0];
+    draw({ clientX: t.clientX, clientY: t.clientY });
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", stopDrawing);
 }
 
 // =======================================
