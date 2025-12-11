@@ -83,25 +83,13 @@ function drawGuides() {
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
 
   // Baseline
-  const yBase = h * 0.70;
+  const yBase = h * 0.60;
 
   guidesCtx.setLineDash([]);
   guidesCtx.strokeStyle = '#9e9e9e';
   guidesCtx.lineWidth = 2.2;
 
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yBase); guidesCtx.lineTo(w, yBase); guidesCtx.stroke();
-}
-
-  // ✅ Baseline
-  if (showBaseline) {
-    const yBase = h * 0.70; // baseline di antara dua garis putus-putus
-
-    guidesCtx.setLineDash([]);
-    guidesCtx.strokeStyle = '#9e9e9e';
-    guidesCtx.lineWidth = 2.2;
-
-    guidesCtx.beginPath(); guidesCtx.moveTo(0, yBase); guidesCtx.lineTo(w, yBase); guidesCtx.stroke();
-  }
 }
 
 // =======================================
