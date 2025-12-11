@@ -41,7 +41,10 @@ function setupCanvas() {
 
   resizeCanvas();
   attachDrawingEvents();
-  drawGuides(); // ✅ WAJIB ADA
+  drawGuides();
+
+  document.getElementById("toggleGuides").addEventListener("change", drawGuides);
+  document.getElementById("toggleBaseline").addEventListener("change", drawGuides);
 }
 
 function resizeCanvas() {
@@ -49,8 +52,6 @@ function resizeCanvas() {
 
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
-
-  console.log("rect:", rect.width, rect.height);
 
   canvas.width = rect.width * dpr;
   canvas.height = rect.height * dpr;
@@ -60,7 +61,7 @@ function resizeCanvas() {
   guidesCanvas.height = rect.height * dpr;
   guidesCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  drawGuides(); // ✅ WAJIB ADA
+  drawGuides();
 }
 
 function drawGuides() {
@@ -71,25 +72,32 @@ function drawGuides() {
 
   guidesCtx.clearRect(0, 0, w, h);
 
-  // Garis putus-putus atas & bawah
-  const yTop = h * 0.25;
-  const yBot = h * 0.75;
+  const showGuides = document.getElementById("toggleGuides").checked;
+  const showBaseline = document.getElementById("toggleBaseline").checked;
 
-  guidesCtx.strokeStyle = '#cfd8dc';
-  guidesCtx.setLineDash([8, 8]);
-  guidesCtx.lineWidth = 1;
+  if (!showGuides && !showBaseline) return;
 
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yTop); guidesCtx.lineTo(w, yTop); guidesCtx.stroke();
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
+  if (showGuides) {
+    const yTop = h * 0.25;
+    const yBot = h * 0.75;
 
-  // Baseline
-  const yBase = h * 0.60;
+    guidesCtx.strokeStyle = '#cfd8dc';
+    guidesCtx.setLineDash([8, 8]);
+    guidesCtx.lineWidth = 1;
 
-  guidesCtx.setLineDash([]);
-  guidesCtx.strokeStyle = '#9e9e9e';
-  guidesCtx.lineWidth = 2.2;
+    guidesCtx.beginPath(); guidesCtx.moveTo(0, yTop); guidesCtx.lineTo(w, yTop); guidesCtx.stroke();
+    guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
+  }
 
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yBase); guidesCtx.lineTo(w, yBase); guidesCtx.stroke();
+  if (showBaseline) {
+    const yBase = h * 0.60;
+
+    guidesCtx.setLineDash([]);
+    guidesCtx.strokeStyle = '#9e9e9e';
+    guidesCtx.lineWidth = 2.2;
+
+    guidesCtx.beginPath(); guidesCtx.moveTo(0, yBase); guidesCtx.lineTo(w, yBase); guidesCtx.stroke();
+  }
 }
 
   // ✅ Baseline
