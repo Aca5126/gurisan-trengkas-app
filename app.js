@@ -58,7 +58,7 @@ function resizeCanvas() {
   guidesCanvas.height = rect.height * dpr;
   guidesCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  drawGuides(); // ✅ sentiasa lukis garisan
+  drawGuides(); // ✅ WAJIB ADA
 }
 
 function drawGuides() {
@@ -69,7 +69,7 @@ function drawGuides() {
 
   guidesCtx.clearRect(0, 0, w, h);
 
-  // ✅ Garis putus-putus atas & bawah
+  // Garis putus-putus atas & bawah
   const yTop = h * 0.25;
   const yBot = h * 0.75;
 
@@ -80,7 +80,7 @@ function drawGuides() {
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yTop); guidesCtx.lineTo(w, yTop); guidesCtx.stroke();
   guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
 
-  // ✅ Baseline
+  // Baseline
   const yBase = h * 0.60;
 
   guidesCtx.setLineDash([]);
