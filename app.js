@@ -273,27 +273,48 @@ async function semakGurisan() {
   }
 }
 
+// =======================================
+// Teka Suku Kata (BAHARU: sokong mode bebas)
+// =======================================
+
 async function tekaSukuKata() {
+  if (!canvas) return;
+
   const perkataanInput = document.getElementById('perkataan');
   const perkataan = perkataanInput.value.trim();
-  if (!perkataan) {
-    alert('Sila masukkan atau pilih perkataan terlebih dahulu.');
+  const dataUrl = canvas.toDataURL('image/png');
+
+  if (!dataUrl) {
+    alert('Sila buat gurisan dahulu sebelum meneka suku kata.');
     return;
   }
 
-  try {
-    dlog('Panggil /suku-kata');
+  const mode = perkataan ? 'guided' : 'freeform';
 
-    const res = await fetch(`${API_BASE}/suku-kata?perkataan=${encodeURIComponent(perkataan)}`);
+  try {
+    dlog('Panggil /api/guess-syllables', { mode, hasWord: !!perkataan });
+
+    const res = await fetch(`${API_BASE}/api/guess-syllables`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        image: dataUrl,
+        perkataan: perkataan || null,
+        mode
+      })
+    });
+
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    dlog('Respon /suku-kata:', data);
+    dlog('Respon /api/guess-syllables:', data);
 
     const suku = data.suku_kata || data.sukuKata || null;
-    if (suku) {
+    if (suku && Array.isArray(suku) && suku.length > 0) {
+      alert(`Suku kata: ${suku.join(' · ')}`);
+    } else if (suku && typeof suku === 'string') {
       alert(`Suku kata: ${suku}`);
     } else {
-      alert('Suku kata tidak dapat dikenal pasti.');
+      alert('Suku kata tidak dapat dikenal pasti. Cuba gurisan yang lebih jelas.');
     }
   } catch (err) {
     console.error(err);
