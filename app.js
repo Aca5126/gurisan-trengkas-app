@@ -513,3 +513,82 @@ window.addEventListener('load', () => {
   initEvents();
   window.addEventListener('resize', resizeCanvas);
 });
+
+
+/* ============================================================
+   INPUT BOX + DROPDOWN + RAWAK (KOMPONEN BARU)
+   ============================================================ */
+
+// ✅ Elemen
+const inputBox = document.getElementById("perkataan");
+const dropdownToggle = document.getElementById("dropdownToggle");
+const dropdownList = document.getElementById("dropdownList");
+const pilihRawakBtn = document.getElementById("pilihRawakBtn");
+
+// ✅ Senarai perkataan (ambil dari words.js)
+let senarai = [];
+if (typeof wordsList !== "undefined") {
+    senarai = wordsList;
+}
+
+// ✅ Buka/Tutup dropdown bila klik ikon ▼
+dropdownToggle.addEventListener("click", () => {
+    const visible = dropdownList.style.display === "block";
+    dropdownList.style.display = visible ? "none" : "block";
+    if (!visible) renderDropdown(senarai);
+});
+
+// ✅ Bila klik input → buka dropdown
+inputBox.addEventListener("click", () => {
+    dropdownList.style.display = "block";
+    renderDropdown(senarai);
+});
+
+// ✅ Bila taip → filter dropdown
+inputBox.addEventListener("input", () => {
+    const q = inputBox.value.toLowerCase();
+    const filtered = senarai.filter(w => w.toLowerCase().includes(q));
+    dropdownList.style.display = "block";
+    renderDropdown(filtered);
+});
+
+// ✅ Render dropdown
+function renderDropdown(list) {
+    dropdownList.innerHTML = "";
+
+    if (list.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "dropdown-item";
+        empty.textContent = "Tiada padanan";
+        dropdownList.appendChild(empty);
+        return;
+    }
+
+    list.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "dropdown-item";
+        div.textContent = item;
+
+        div.onclick = () => {
+            inputBox.value = item;
+            dropdownList.style.display = "none";
+        };
+
+        dropdownList.appendChild(div);
+    });
+}
+
+// ✅ Rawak → isi input box
+pilihRawakBtn.addEventListener("click", () => {
+    if (senarai.length === 0) return;
+    const rawak = senarai[Math.floor(Math.random() * senarai.length)];
+    inputBox.value = rawak;
+    dropdownList.style.display = "none";
+});
+
+// ✅ Klik luar → tutup dropdown
+document.addEventListener("click", (e) => {
+    if (!e.target.closest(".input-dropdown-container")) {
+        dropdownList.style.display = "none";
+    }
+});
