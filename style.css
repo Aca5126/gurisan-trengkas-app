@@ -169,21 +169,25 @@ button:disabled {
   margin-top: 10px;
 }
 
-#guidesCanvas,
+/* ✅ guidesCanvas mesti berada DI ATAS canvas */
+#guidesCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none; /* ✅ supaya tidak menghalang lukisan */
+}
+
+/* ✅ canvas utama berada di bawah */
 #canvas {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-#guidesCanvas {
   z-index: 1;
-}
-
-#canvas {
-  z-index: 2;
 }
 
 canvas {
