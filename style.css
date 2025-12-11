@@ -362,7 +362,6 @@ canvas {
 }
 
 /* Responsif */
-
 @media (max-width: 960px) {
   .layout {
     grid-template-columns: 1fr;
@@ -373,11 +372,10 @@ canvas {
   }
 }
 
-  /* ============================================================
+/* ============================================================
    TAMBAHAN STYLE.CSS — UI PASTEL LEMBUT (FINAL)
    ============================================================ */
 
-/* ✅ Butang kecil pastel kelabu (atas kanan) */
 .miniBtn {
     width: 90px;
     text-align: center;
@@ -399,27 +397,23 @@ canvas {
     border-color: #bfbfbf;
 }
 
-/* ✅ Pastikan canvas-actions align kiri-kanan sama dengan canvas */
 .canvas-actions {
     display: flex;
     gap: 8px;
     margin-top: 10px;
     width: 100%;
-    max-width: 800px; /* sama seperti canvas-wrap */
+    max-width: 800px;
 }
 
-/* ✅ Panjangkan butang Semak Gurisan */
 #semakBtn {
     flex: 1;
 }
 
-/* ✅ Butang tong sampah (bersihBtn) */
 #bersihBtn {
     font-size: 18px;
     padding: 6px 12px;
 }
 
-/* ✅ Hasil semakan spacing */
 .hasil {
     margin-top: 10px;
     padding: 8px 10px;
@@ -435,7 +429,6 @@ canvas {
     color: var(--text-muted);
 }
 
-/* ✅ Label baseline */
 #labelBaseline {
     margin-left: 6px;
     font-size: 12px;
