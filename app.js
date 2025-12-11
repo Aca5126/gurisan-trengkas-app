@@ -50,17 +50,18 @@ function resizeCanvas() {
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
 
-  console.log("rect:", rect.width, rect.height);
-
+  // ✅ Set saiz sebenar canvas berdasarkan CSS × DPR
   canvas.width = rect.width * dpr;
   canvas.height = rect.height * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   guidesCanvas.width = rect.width * dpr;
   guidesCanvas.height = rect.height * dpr;
+
+  // ✅ Pastikan transform diset selepas width/height
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   guidesCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  drawGuides(); // ✅ sentiasa lukis
+  drawGuides();
 }
 
 function drawGuides() {
