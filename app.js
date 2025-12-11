@@ -49,6 +49,10 @@ function setupCanvas() {
   resizeCanvas();
   attachDrawingEvents();
   drawGuides();
+
+  // ✅ Tambah event listener toggle DI SINI
+  document.getElementById("toggleGuides").addEventListener("change", drawGuides);
+  document.getElementById("toggleBaseline").addEventListener("change", drawGuides);
 }
 
 function resizeCanvas() {
@@ -659,6 +663,3 @@ function getMode() {
 function getPerkataan() {
     return inputBox.value.trim();
 }
-
-document.getElementById("toggleGuides").addEventListener("change", drawGuides);
-document.getElementById("toggleBaseline").addEventListener("change", drawGuides);
