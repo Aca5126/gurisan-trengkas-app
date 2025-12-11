@@ -36,60 +36,28 @@ function setupCanvas() {
   canvas = document.getElementById('canvas');
   guidesCanvas = document.getElementById('guidesCanvas');
 
+  if (!canvas || !guidesCanvas) {
+    dlog('Canvas atau guidesCanvas tidak dijumpai dalam DOM.');
+    return;
+  }
+
   ctx = canvas.getContext('2d');
   guidesCtx = guidesCanvas.getContext('2d');
 
   resizeCanvas();
   attachDrawingEvents();
-  drawGuides(); // ✅ lukis masa mula
-}
-
-// =========================
-// 2. FUNGSI LUKISAN
-// =========================
-
-let isDrawing = false;
-
-function startDrawing(e) {
-  isDrawing = true;
-  const rect = canvas.getBoundingClientRect();
-  lastX = (e.clientX - rect.left);
-  lastY = (e.clientY - rect.top);
-}
-
-function draw(e) {
-  if (!isDrawing) return;
-
-  const rect = canvas.getBoundingClientRect();
-  const x = (e.clientX - rect.left);
-  const y = (e.clientY - rect.top);
-
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "#000";
-
-  ctx.beginPath();
-  ctx.moveTo(lastX, lastY);
-  ctx.lineTo(x, y);
-  ctx.stroke();
-
-  lastX = x;
-  lastY = y;
-}
-
-function stopDrawing() {
-  isDrawing = false;
+  drawGuides(); // lukis garis panduan masa mula
 }
 
 function resizeCanvas() {
-  if (!canvas || !guidesCanvas) return;
+  if (!canvas || !guidesCanvas || !ctx || !guidesCtx) return;
 
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
 
-  // ✅ Jika rect = 0, jangan resize (elak hilang garisan)
+  // Jika rect = 0, jangan resize (elak hilang garisan)
   if (rect.width === 0 || rect.height === 0) {
-    console.warn("resizeCanvas skipped: rect=0");
+    console.warn('resizeCanvas skipped: rect=0');
     return;
   }
 
@@ -121,8 +89,15 @@ function drawGuides() {
   guidesCtx.setLineDash([8, 8]);
   guidesCtx.lineWidth = 1;
 
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yTop); guidesCtx.lineTo(w, yTop); guidesCtx.stroke();
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yBot); guidesCtx.lineTo(w, yBot); guidesCtx.stroke();
+  guidesCtx.beginPath();
+  guidesCtx.moveTo(0, yTop);
+  guidesCtx.lineTo(w, yTop);
+  guidesCtx.stroke();
+
+  guidesCtx.beginPath();
+  guidesCtx.moveTo(0, yBot);
+  guidesCtx.lineTo(w, yBot);
+  guidesCtx.stroke();
 
   // Baseline
   const yBase = h * 0.60;
@@ -131,11 +106,14 @@ function drawGuides() {
   guidesCtx.strokeStyle = '#9e9e9e';
   guidesCtx.lineWidth = 2.2;
 
-  guidesCtx.beginPath(); guidesCtx.moveTo(0, yBase); guidesCtx.lineTo(w, yBase); guidesCtx.stroke();
+  guidesCtx.beginPath();
+  guidesCtx.moveTo(0, yBase);
+  guidesCtx.lineTo(w, yBase);
+  guidesCtx.stroke();
 }
 
 // =======================================
-// LOGIK LUKIS (PEN & PEMADAM)
+// LOGIK LUKIS (PEN & PEMADAM) — SISTEM MODEN
 // =======================================
 
 function getCanvasPos(e) {
@@ -157,7 +135,7 @@ function getCanvasPos(e) {
 }
 
 function startDrawing(e) {
-  e.preventDefault();
+  e.preventDefault && e.preventDefault();
   drawing = true;
   const pos = getCanvasPos(e);
   lastX = pos.x;
@@ -166,22 +144,22 @@ function startDrawing(e) {
 
 function draw(e) {
   if (!drawing) return;
-  e.preventDefault();
+  e.preventDefault && e.preventDefault();
 
   const pos = getCanvasPos(e);
 
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
 
-  // ✅ Saiz pen & pemadam
+  // Saiz pen & pemadam
   ctx.lineWidth = erasing ? 28 : 3;
 
-  // ✅ Pemadam licin (destination-out)
+  // Pemadam licin (destination-out)
   if (erasing) {
-    ctx.globalCompositeOperation = "destination-out";
+    ctx.globalCompositeOperation = 'destination-out';
   } else {
-    ctx.globalCompositeOperation = "source-over";
-    ctx.strokeStyle = "#000000";
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = '#000000';
   }
 
   ctx.beginPath();
@@ -193,31 +171,44 @@ function draw(e) {
   lastY = pos.y;
 }
 
+function stopDrawing(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  drawing = false;
+}
+
 function attachDrawingEvents() {
+  if (!canvas) return;
+
   // =========================
   // MOUSE
   // =========================
-  canvas.addEventListener("mousedown", startDrawing);
-  canvas.addEventListener("mousemove", draw);
-  canvas.addEventListener("mouseup", stopDrawing);
-  canvas.addEventListener("mouseleave", stopDrawing);
+  canvas.addEventListener('mousedown', startDrawing);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDrawing);
+  canvas.addEventListener('mouseleave', stopDrawing);
 
   // =========================
   // TOUCH (mobile)
   // =========================
-  canvas.addEventListener("touchstart", (e) => {
-    e.preventDefault();
-    const t = e.touches[0];
-    startDrawing({ clientX: t.clientX, clientY: t.clientY });
-  }, { passive: false });
+  canvas.addEventListener(
+    'touchstart',
+    (e) => {
+      e.preventDefault();
+      startDrawing(e);
+    },
+    { passive: false }
+  );
 
-  canvas.addEventListener("touchmove", (e) => {
-    e.preventDefault();
-    const t = e.touches[0];
-    draw({ clientX: t.clientX, clientY: t.clientY });
-  }, { passive: false });
+  canvas.addEventListener(
+    'touchmove',
+    (e) => {
+      e.preventDefault();
+      draw(e);
+    },
+    { passive: false }
+  );
 
-  canvas.addEventListener("touchend", stopDrawing);
+  canvas.addEventListener('touchend', stopDrawing);
 }
 
 // =======================================
@@ -280,15 +271,6 @@ function kemaskiniRekod(status, ketepatan) {
 // SEMAKAN GURISAN & BACKEND (VERSI BAHARU)
 // =======================================
 
-async function semakGurisan() {
-  if (!canvas) return;
-
-  const hasil = document.getElementById('hasil');
-  const deteksi = document.getElementById('deteksiGurisan');
-
-  const perkataan = getPerkataan();
-  const mode = getMode();
-
 async function hantarKeBackend(perkataan, hasil, deteksi) {
   const dataUrl = canvas.toDataURL('image/png');
 
@@ -315,55 +297,59 @@ async function hantarKeBackend(perkataan, hasil, deteksi) {
     if (ketepatan !== null) statusText += ` (${ketepatan}%)`;
     deteksi.textContent = statusText;
 
-    // ✅ Kemas kini rekod prestasi
+    // Kemas kini rekod prestasi
     if (status === 'betul' || status === 'salah' || status === 'tidak pasti') {
       kemaskiniRekod(status, ketepatan ?? 0);
     }
-
   } catch (err) {
     console.error(err);
     hasil.textContent = 'Ralat ketika menyemak gurisan.';
     deteksi.textContent = 'Status gurisan: ralat.';
   }
 }
-  
+
+async function semakGurisan() {
+  if (!canvas) return;
+
+  const hasil = document.getElementById('hasil');
+  const deteksi = document.getElementById('deteksiGurisan');
+
+  const perkataan = getPerkataan();
+  const mode = getMode();
+
   // ============================
-  // ✅ MODE BEBAS
+  // MODE BEBAS
   // ============================
-  if (mode === "bebas") {
+  if (mode === 'bebas') {
     if (!perkataan) {
-      hasil.textContent = "Tidak dapat dikenal pasti.";
-      deteksi.textContent = "Gurisan tidak dapat dikenal pasti.";
+      hasil.textContent = 'Tidak dapat dikenal pasti.';
+      deteksi.textContent = 'Gurisan tidak dapat dikenal pasti.';
       return;
     }
-
-    // Jika ada input → terus hantar ke backend
     return await hantarKeBackend(perkataan, hasil, deteksi);
   }
 
   // ============================
-  // ✅ MODE RAWAK
+  // MODE RAWAK
   // ============================
-  if (mode === "rawak") {
+  if (mode === 'rawak') {
     if (!perkataan) {
-      hasil.textContent = "Sila tekan butang Rawak dahulu.";
-      deteksi.textContent = "Input kosong.";
+      hasil.textContent = 'Sila tekan butang Rawak dahulu.';
+      deteksi.textContent = 'Input kosong.';
       return;
     }
-
     return await hantarKeBackend(perkataan, hasil, deteksi);
   }
 
   // ============================
-  // ✅ MODE DITETAPKAN
+  // MODE DITETAPKAN
   // ============================
-  if (mode === "ditetapkan") {
+  if (mode === 'ditetapkan') {
     if (!perkataan) {
-      hasil.textContent = "Sila pilih perkataan dari senarai.";
-      deteksi.textContent = "Input kosong.";
+      hasil.textContent = 'Sila pilih perkataan dari senarai.';
+      deteksi.textContent = 'Input kosong.';
       return;
     }
-
     return await hantarKeBackend(perkataan, hasil, deteksi);
   }
 }
@@ -453,7 +439,7 @@ function muatTurunPNG() {
 }
 
 // =======================================
-// MOD PERKATAAN: BEBAS / RAWAK / DITETAPKAN
+// MOD PERKATAAN: RAWAK / DITETAPKAN
 // =======================================
 
 function pilihRawak() {
@@ -478,7 +464,7 @@ function initDitETapkanSelect() {
   }
 
   if (window.WORDS && window.WORDS.length > 0) {
-    window.WORDS.forEach(w => {
+    window.WORDS.forEach((w) => {
       const opt = document.createElement('option');
       opt.value = w;
       opt.textContent = w;
@@ -494,7 +480,7 @@ function initDitETapkanSelect() {
 
 function resetPrestasi() {
   rekod = { betul: 0, salah: 0, jumlah: 0, ketepatanTerkumpul: 0 };
-  // Paksa kemaskini paparan ke 0
+
   const betulEl = document.getElementById('betul');
   const salahEl = document.getElementById('salah');
   const kejayaanEl = document.getElementById('kejayaan');
@@ -519,7 +505,7 @@ function eksportCSV() {
     [rekod.betul, rekod.salah, rekod.jumlah, purataKetepatan]
   ];
 
-  const csv = rows.map(r => r.join(',')).join('\n');
+  const csv = rows.map((r) => r.join(',')).join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -541,14 +527,14 @@ function toggleSpeaker() {
 }
 
 // =======================================
-// INIT SEMUA EVENT LISTENER
+// INIT SEMUA EVENT LISTENER UI
 // =======================================
 
 function initEvents() {
   dlog('initEvents() called');
 
-  document.querySelectorAll('input[name="mode"]').forEach(radio => {
-    radio.addEventListener('change', e => {
+  document.querySelectorAll('input[name="mode"]').forEach((radio) => {
+    radio.addEventListener('change', (e) => {
       setMode(e.target.value);
     });
   });
@@ -576,26 +562,129 @@ function initEvents() {
   if (ulangSebutanBtn) ulangSebutanBtn.addEventListener('click', ulangSebutan);
   if (muatTurunBtn) muatTurunBtn.addEventListener('click', muatTurunPNG);
   if (pilihRawakBtn) pilihRawakBtn.addEventListener('click', pilihRawak);
-  if (senaraiDitETapkan) senaraiDitETapkan.addEventListener('change', e => {
-    document.getElementById('perkataan').value = e.target.value;
-    dlog('Ditetapkan pilih:', e.target.value);
-  });
+  if (senaraiDitETapkan) {
+    senaraiDitETapkan.addEventListener('change', (e) => {
+      const perkataanInput = document.getElementById('perkataan');
+      if (perkataanInput) perkataanInput.value = e.target.value;
+      dlog('Ditetapkan pilih:', e.target.value);
+    });
+  }
   if (resetPrestasiBtn) resetPrestasiBtn.addEventListener('click', resetPrestasi);
   if (exportCsvBtn) exportCsvBtn.addEventListener('click', eksportCSV);
   if (toggleSpeakerBtn) toggleSpeakerBtn.addEventListener('click', toggleSpeaker);
 
-  if (toggleGuidesCb) toggleGuidesCb.addEventListener('change', e => {
-    guidesCanvas.style.display = e.target.checked ? 'block' : 'none';
-  });
+  if (toggleGuidesCb) {
+    toggleGuidesCb.addEventListener('change', (e) => {
+      if (!guidesCanvas) return;
+      guidesCanvas.style.display = e.target.checked ? 'block' : 'none';
+    });
+  }
 
   const labelBaseline = document.getElementById('labelBaseline');
   if (toggleBaselineCb && labelBaseline) {
-    toggleBaselineCb.addEventListener('change', e => {
+    toggleBaselineCb.addEventListener('change', (e) => {
       labelBaseline.style.display = e.target.checked ? 'inline' : 'none';
     });
   }
 
   initDitETapkanSelect();
+}
+
+// =======================================
+// INPUT BOX + DROPDOWN + RAWAK (KOMPONEN BARU)
+// =======================================
+
+const inputBox = document.getElementById('perkataan');
+const dropdownToggle = document.getElementById('dropdownToggle');
+const dropdownList = document.getElementById('dropdownList');
+const pilihRawakBtn2 = document.getElementById('pilihRawakBtn');
+
+// Senarai perkataan (ambil dari words.js, jika ada)
+let senarai = [];
+if (typeof wordsList !== 'undefined') {
+  senarai = wordsList;
+}
+
+// Buka/Tutup dropdown bila klik ikon ▼
+if (dropdownToggle && dropdownList) {
+  dropdownToggle.addEventListener('click', () => {
+    const visible = dropdownList.style.display === 'block';
+    dropdownList.style.display = visible ? 'none' : 'block';
+    if (!visible) renderDropdown(senarai);
+  });
+}
+
+// Bila klik input → buka dropdown
+if (inputBox && dropdownList) {
+  inputBox.addEventListener('click', () => {
+    dropdownList.style.display = 'block';
+    renderDropdown(senarai);
+  });
+
+  // Bila taip → filter dropdown
+  inputBox.addEventListener('input', () => {
+    const q = inputBox.value.toLowerCase();
+    const filtered = senarai.filter((w) => w.toLowerCase().includes(q));
+    dropdownList.style.display = 'block';
+    renderDropdown(filtered);
+  });
+}
+
+function renderDropdown(list) {
+  if (!dropdownList) return;
+  dropdownList.innerHTML = '';
+
+  if (list.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'dropdown-item';
+    empty.textContent = 'Tiada padanan';
+    dropdownList.appendChild(empty);
+    return;
+  }
+
+  list.forEach((item) => {
+    const div = document.createElement('div');
+    div.className = 'dropdown-item';
+    div.textContent = item;
+
+    div.onclick = () => {
+      if (inputBox) inputBox.value = item;
+      dropdownList.style.display = 'none';
+    };
+
+    dropdownList.appendChild(div);
+  });
+}
+
+// Rawak → isi input box
+if (pilihRawakBtn2 && inputBox && dropdownList) {
+  pilihRawakBtn2.addEventListener('click', () => {
+    if (senarai.length === 0) return;
+    const rawak = senarai[Math.floor(Math.random() * senarai.length)];
+    inputBox.value = rawak;
+    dropdownList.style.display = 'none';
+  });
+}
+
+// Klik luar → tutup dropdown
+document.addEventListener('click', (e) => {
+  if (!dropdownList) return;
+  if (!e.target.closest('.input-dropdown-container')) {
+    dropdownList.style.display = 'none';
+  }
+});
+
+// =======================================
+// LOGIK MODE BAHARU (BEBAS / RAWAK / DITETAPKAN)
+// =======================================
+
+function getMode() {
+  const checked = document.querySelector("input[name='mode']:checked");
+  return checked ? checked.value : 'bebas';
+}
+
+function getPerkataan() {
+  return inputBox ? inputBox.value.trim() : '';
 }
 
 // =======================================
@@ -608,96 +697,3 @@ window.addEventListener('load', () => {
   initEvents();
   window.addEventListener('resize', resizeCanvas);
 });
-
-
-/* ============================================================
-   INPUT BOX + DROPDOWN + RAWAK (KOMPONEN BARU)
-   ============================================================ */
-
-// ✅ Elemen
-const inputBox = document.getElementById("perkataan");
-const dropdownToggle = document.getElementById("dropdownToggle");
-const dropdownList = document.getElementById("dropdownList");
-const pilihRawakBtn = document.getElementById("pilihRawakBtn");
-
-// ✅ Senarai perkataan (ambil dari words.js)
-let senarai = [];
-if (typeof wordsList !== "undefined") {
-    senarai = wordsList;
-}
-
-// ✅ Buka/Tutup dropdown bila klik ikon ▼
-dropdownToggle.addEventListener("click", () => {
-    const visible = dropdownList.style.display === "block";
-    dropdownList.style.display = visible ? "none" : "block";
-    if (!visible) renderDropdown(senarai);
-});
-
-// ✅ Bila klik input → buka dropdown
-inputBox.addEventListener("click", () => {
-    dropdownList.style.display = "block";
-    renderDropdown(senarai);
-});
-
-// ✅ Bila taip → filter dropdown
-inputBox.addEventListener("input", () => {
-    const q = inputBox.value.toLowerCase();
-    const filtered = senarai.filter(w => w.toLowerCase().includes(q));
-    dropdownList.style.display = "block";
-    renderDropdown(filtered);
-});
-
-// ✅ Render dropdown
-function renderDropdown(list) {
-    dropdownList.innerHTML = "";
-
-    if (list.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "dropdown-item";
-        empty.textContent = "Tiada padanan";
-        dropdownList.appendChild(empty);
-        return;
-    }
-
-    list.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "dropdown-item";
-        div.textContent = item;
-
-        div.onclick = () => {
-            inputBox.value = item;
-            dropdownList.style.display = "none";
-        };
-
-        dropdownList.appendChild(div);
-    });
-}
-
-// ✅ Rawak → isi input box
-pilihRawakBtn.addEventListener("click", () => {
-    if (senarai.length === 0) return;
-    const rawak = senarai[Math.floor(Math.random() * senarai.length)];
-    inputBox.value = rawak;
-    dropdownList.style.display = "none";
-});
-
-// ✅ Klik luar → tutup dropdown
-document.addEventListener("click", (e) => {
-    if (!e.target.closest(".input-dropdown-container")) {
-        dropdownList.style.display = "none";
-    }
-});
-
-/* ============================================================
-   LOGIK MODE BAHARU (BEBAS / RAWAK / DITETAPKAN)
-   ============================================================ */
-
-function getMode() {
-    return document.querySelector("input[name='mode']:checked").value;
-}
-
-function getPerkataan() {
-    return inputBox.value.trim();
-}
-
-window.addEventListener("load", setupCanvas);
