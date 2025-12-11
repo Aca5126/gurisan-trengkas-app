@@ -70,7 +70,9 @@ function resizeCanvas() {
   guidesCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   dlog('resizeCanvas()', { width: rect.width, height: rect.height, dpr });
-  drawGuides();
+
+  // ✅ PENTING: biar drawGuides() check toggle sendiri
+  requestAnimationFrame(drawGuides);
 }
 
 function drawGuides() {
