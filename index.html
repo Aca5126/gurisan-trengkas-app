@@ -1,90 +1,93 @@
 <!DOCTYPE html>
 <html lang="ms">
 <head>
-  <meta charset="UTF-8" />
-  <title>Latihan Gurisan Trengkas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Latihan Gurisan Trengkas</title>
+
+    <!-- Manifest untuk PWA -->
+    <link rel="manifest" href="manifest.webmanifest" />
+
+    <!-- Stylesheet utama -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Icon -->
+    <link rel="icon" type="image/png" href="icons/icon-192.png" />
 </head>
+
 <body>
-  <main class="app-container">
-    <h1>Latihan Gurisan Trengkas</h1>
-    <p>
-      Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.
-    </p>
+    <header>
+        <h1>Latihan Gurisan Trengkas</h1>
+        <p class="subtitle">
+            Sistem Trengkas Pitman 2000 Malaysia menggunakan gurisan untuk mewakili bunyi konsonan.
+        </p>
+    </header>
 
-    <section class="latihan-section">
-      <h2>Latihan Gurisan</h2>
+    <main>
+        <section class="latihan-section">
+            <h2>Latihan Gurisan</h2>
 
-      <div class="mode-row">
-        <label>
-          <input type="radio" name="mode" value="bebas" id="modeBebas" checked />
-          Bebas
-        </label>
-        <label>
-          <input type="radio" name="mode" value="rawak" id="modeRawak" />
-          Rawak
-        </label>
-        <label>
-          <input type="radio" name="mode" value="ditetapkan" id="modeDitetapkan" />
-          Ditetapkan
-        </label>
-      </div>
+            <!-- Pilihan Mode -->
+            <div class="mode-row">
+                <label><input type="radio" name="mode" value="bebas" id="modeBebas" checked /> Bebas</label>
+                <label><input type="radio" name="mode" value="rawak" id="modeRawak" /> Rawak</label>
+                <label><input type="radio" name="mode" value="ditetapkan" id="modeDitetapkan" /> Ditetapkan</label>
+            </div>
 
-      <div class="word-input-row">
-        <input
-          type="text"
-          id="wordInput"
-          placeholder="Contoh: lusa, buku, rumah..."
-        />
-        <button id="btnPilihRawak">Pilih Rawak</button>
-      </div>
+            <!-- Input Perkataan -->
+            <div class="word-input-row">
+                <input type="text" id="wordInput" placeholder="Contoh: lusa, buku, rumah..." />
+                <button id="btnPilihRawak">Pilih Rawak</button>
+            </div>
 
-      <div class="dropdown-row">
-        <select id="wordDropdown">
-          <option value="">— Pilih perkataan —</option>
-          <option value="buku">buku</option>
-          <option value="lusa">lusa</option>
-          <option value="rumah">rumah</option>
-        </select>
-      </div>
+            <!-- Dropdown Perkataan -->
+            <div class="dropdown-row">
+                <select id="wordDropdown">
+                    <option value="">— Pilih perkataan —</option>
+                </select>
+            </div>
 
-      <div class="tools-row">
-        <button id="btnPen" class="active">Pen</button>
-        <button id="btnPadam">Padam</button>
+            <!-- Tools -->
+            <div class="tools-row">
+                <button id="btnPen" class="active">Pen</button>
+                <button id="btnPadam">Padam</button>
 
-        <label class="checkbox-inline">
-          <input type="checkbox" id="showGuides" checked />
-          Garis panduan
-        </label>
-        <label class="checkbox-inline">
-          <input type="checkbox" id="showBaseline" checked />
-          Baseline
-        </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="showGuides" checked /> Garis panduan
+                </label>
 
-        <select id="baselineSpacing">
-          <option value="0.5">Biasa (0.5 cm)</option>
-          <option value="0.7">Luas (0.7 cm)</option>
-          <option value="0.3">Rapat (0.3 cm)</option>
-        </select>
-      </div>
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="showBaseline" checked /> Baseline
+                </label>
 
-      <div class="canvas-wrapper">
-        <canvas id="gurisanCanvas" width="600" height="240"></canvas>
-        <canvas id="guidesCanvas" width="600" height="240"></canvas>
-      </div>
+                <select id="baselineSpacing">
+                    <option value="0.5">Biasa (0.5 cm)</option>
+                    <option value="0.7">Luas (0.7 cm)</option>
+                    <option value="0.3">Rapat (0.3 cm)</option>
+                </select>
+            </div>
 
-      <div class="action-row">
-        <button id="btnSemakGurisan">Semak Gurisan</button>
-        <button id="btnTekaSukuKata">Teka Suku Kata</button>
-        <button id="btnUlangSebutan">Ulang Sebutan</button>
-        <button id="btnBersihkan">Bersihkan</button>
-      </div>
+            <!-- Kanvas -->
+            <div class="canvas-wrapper">
+                <canvas id="gurisanCanvas" width="600" height="240"></canvas>
+                <canvas id="guidesCanvas" width="600" height="240"></canvas>
+            </div>
 
-      <div id="syllableResult" class="result-box"></div>
-    </section>
-  </main>
+            <!-- Butang Aksi -->
+            <div class="action-row">
+                <button id="btnSemakGurisan">Semak Gurisan</button>
+                <button id="btnTekaSukuKata">Teka Suku Kata</button>
+                <button id="btnUlangSebutan">Ulang Sebutan</button>
+                <button id="btnBersihkan">Bersihkan</button>
+            </div>
 
-  <script src="app.js"></script>
+            <!-- Hasil Suku Kata -->
+            <div id="syllableResult" class="result-box"></div>
+        </section>
+    </main>
+
+    <!-- Script utama -->
+    <script src="words.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
