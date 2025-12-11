@@ -21,12 +21,11 @@ let canvas, ctx, guidesCanvas, guidesCtx;
 let currentMode = 'bebas'; // 'bebas' | 'rawak' | 'ditetapkan'
 let speakerOn = true;
 
-// Rekod prestasi ringkas
 let rekod = {
   betul: 0,
   salah: 0,
   jumlah: 0,
-  ketepatanTerkumpul: 0 // dalam %
+  ketepatanTerkumpul: 0
 };
 
 // =======================================
@@ -53,12 +52,14 @@ function setupCanvas() {
 }
 
 function resizeCanvas() {
-  const dpr = window.devicePixelRatio || 1;
+  if (!canvas || !guidesCanvas) return;
 
+  const dpr = window.devicePixelRatio || 1;
   const rect = canvas.getBoundingClientRect();
+
   canvas.width = rect.width * dpr;
   canvas.height = rect.height * dpr;
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // reset & scale
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
   guidesCanvas.width = rect.width * dpr;
   guidesCanvas.height = rect.height * dpr;
@@ -70,7 +71,6 @@ function resizeCanvas() {
 
 function drawGuides() {
   if (!guidesCanvas || !guidesCtx) return;
-
   const rect = guidesCanvas.getBoundingClientRect();
   const w = rect.width;
   const h = rect.height;
@@ -135,12 +135,7 @@ function draw(e) {
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.lineWidth = 3;
-
-  if (erasing) {
-    ctx.strokeStyle = '#ffffff';
-  } else {
-    ctx.strokeStyle = '#000000';
-  }
+  ctx.strokeStyle = erasing ? '#ffffff' : '#000000';
 
   ctx.beginPath();
   ctx.moveTo(lastX, lastY);
@@ -170,7 +165,7 @@ function attachDrawingEvents() {
 }
 
 // =======================================
-// UTILITI UI
+// UTILITI UI & PRESTASI
 // =======================================
 
 function setMode(mode) {
@@ -189,10 +184,12 @@ function bersihkanCanvas() {
   if (deteksi) deteksi.textContent = 'Status gurisan: belum dianalisis';
 }
 
-function kemaskiniRekod(berjaya, ketepatan) {
+function kemaskiniRekod(status, ketepatan) {
+  // status: "betul" | "salah" | "tidak pasti"
   rekod.jumlah += 1;
-  if (berjaya) rekod.betul += 1;
-  else rekod.salah += 1;
+
+  if (status === 'betul') rekod.betul += 1;
+  else if (status === 'salah') rekod.salah += 1;
 
   if (typeof ketepatan === 'number') {
     rekod.ketepatanTerkumpul += ketepatan;
@@ -220,7 +217,7 @@ function kemaskiniRekod(berjaya, ketepatan) {
 
   if (tahapEl) tahapEl.textContent = tahap;
 
-  dlog('Rekod dikemaskini:', { ...rekod, kadarKejayaan, purataKetepatan, tahap });
+  dlog('Rekod dikemaskini:', { ...rekod, kadarKejayaan, purataKetepatan, tahap, status });
 }
 
 // =======================================
@@ -258,12 +255,16 @@ async function semakGurisan() {
     const mesej = data.mesej || 'Semakan siap.';
     const status = data.status || 'tidak pasti';
     const ketepatan = typeof data.ketepatan === 'number' ? data.ketepatan : null;
-    const betul = data.betul === true || status === 'betul';
 
     if (hasil) hasil.textContent = mesej;
-    if (deteksi) deteksi.textContent = `Status gurisan: ${status}${ketepatan !== null ? ` (${ketepatan}%)` : ''}`;
+    let statusText = `Status gurisan: ${status}`;
+    if (ketepatan !== null) statusText += ` (${ketepatan}%)`;
+    if (deteksi) deteksi.textContent = statusText;
 
-    kemaskiniRekod(betul, ketepatan ?? 0);
+    // Hanya kira rekod jika bukan ralat
+    if (status === 'betul' || status === 'salah' || status === 'tidak pasti') {
+      kemaskiniRekod(status, ketepatan ?? 0);
+    }
 
   } catch (err) {
     console.error(err);
@@ -288,7 +289,12 @@ async function tekaSukuKata() {
     const data = await res.json();
     dlog('Respon /suku-kata:', data);
 
-    alert(`Suku kata: ${data.suku_kata || 'Tidak dapat dikenal pasti'}`);
+    const suku = data.suku_kata || data.sukuKata || null;
+    if (suku) {
+      alert(`Suku kata: ${suku}`);
+    } else {
+      alert('Suku kata tidak dapat dikenal pasti.');
+    }
   } catch (err) {
     console.error(err);
     alert('Ralat ketika mendapatkan suku kata.');
@@ -350,13 +356,11 @@ function initDitETapkanSelect() {
   const select = document.getElementById('senaraiDitETapkan');
   if (!select) return;
 
-  // Jika words.js sudah auto-populate, jangan sentuh
   if (select.options.length > 0) {
     dlog('senaraiDitETapkan sudah terisi daripada words.js');
     return;
   }
 
-  // Fallback: isi dengan WORDS biasa
   if (window.WORDS && window.WORDS.length > 0) {
     window.WORDS.forEach(w => {
       const opt = document.createElement('option');
@@ -369,25 +373,34 @@ function initDitETapkanSelect() {
 }
 
 // =======================================
-// REKOD PRESTASI: RESET, CSV
+// REKOD PRESTASI: RESET & CSV
 // =======================================
 
 function resetPrestasi() {
   rekod = { betul: 0, salah: 0, jumlah: 0, ketepatanTerkumpul: 0 };
-  kemaskiniRekod(false, 0); // akan set semua paparan kepada 0
+  // Paksa kemaskini paparan ke 0
+  const betulEl = document.getElementById('betul');
+  const salahEl = document.getElementById('salah');
+  const kejayaanEl = document.getElementById('kejayaan');
+  const kejayaanInfoEl = document.getElementById('kejayaanInfo');
+  const ketepatanEl = document.getElementById('ketepatan');
+  const tahapEl = document.getElementById('tahap');
+
+  if (betulEl) betulEl.textContent = '0';
+  if (salahEl) salahEl.textContent = '0';
+  if (kejayaanEl) kejayaanEl.textContent = '0%';
+  if (kejayaanInfoEl) kejayaanInfoEl.textContent = '0 cubaan keseluruhan';
+  if (ketepatanEl) ketepatanEl.textContent = '0%';
+  if (tahapEl) tahapEl.textContent = 'Pemula';
+
   dlog('Rekod prestasi direset');
 }
 
-// (Ringkas: hanya eksport asas; boleh diperluas ikut keperluan)
 function eksportCSV() {
+  const purataKetepatan = rekod.jumlah > 0 ? Math.round(rekod.ketepatanTerkumpul / rekod.jumlah) : 0;
   const rows = [
     ['Betul', 'Salah', 'Jumlah', 'PurataKetepatan(%)'],
-    [
-      rekod.betul,
-      rekod.salah,
-      rekod.jumlah,
-      rekod.jumlah > 0 ? Math.round(rekod.ketepatanTerkumpul / rekod.jumlah) : 0
-    ]
+    [rekod.betul, rekod.salah, rekod.jumlah, purataKetepatan]
   ];
 
   const csv = rows.map(r => r.join(',')).join('\n');
@@ -418,14 +431,12 @@ function toggleSpeaker() {
 function initEvents() {
   dlog('initEvents() called');
 
-  // Mode radio
   document.querySelectorAll('input[name="mode"]').forEach(radio => {
     radio.addEventListener('change', e => {
       setMode(e.target.value);
     });
   });
 
-  // Buttons canvas tools
   const penBtn = document.getElementById('penBtn');
   const padamBtn = document.getElementById('padamBtn');
   const bersihBtn = document.getElementById('bersihBtn');
@@ -468,7 +479,6 @@ function initEvents() {
     });
   }
 
-  // Pastikan select Ditetapkan terisi jika words.js belum auto-populate
   initDitETapkanSelect();
 }
 
