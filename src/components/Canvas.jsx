@@ -8,9 +8,6 @@ export default function Canvas({ targetWord, onResult }) {
   const [isDrawing, setIsDrawing] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // ===============================
-  // Setup canvas
-  // ===============================
   useEffect(() => {
     const canvas = canvasRef.current;
     canvas.width = 400;
@@ -20,13 +17,12 @@ export default function Canvas({ targetWord, onResult }) {
     ctx.lineWidth = 6;
     ctx.lineCap = "round";
     ctx.strokeStyle = "#000";
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctxRef.current = ctx;
   }, []);
 
-  // ===============================
-  // Drawing handlers
-  // ===============================
   const startDrawing = (e) => {
     const { offsetX, offsetY } = e.nativeEvent;
     ctxRef.current.beginPath();
@@ -42,30 +38,23 @@ export default function Canvas({ targetWord, onResult }) {
   };
 
   const stopDrawing = () => {
+    if (!isDrawing) return;
     ctxRef.current.closePath();
     setIsDrawing(false);
   };
 
-  // ===============================
-  // Clear canvas
-  // ===============================
   const clearCanvas = () => {
     const canvas = canvasRef.current;
-    ctxRef.current.clearRect(0, 0, canvas.width, canvas.height);
+    ctxRef.current.fillStyle = "#fff";
+    ctxRef.current.fillRect(0, 0, canvas.width, canvas.height);
   };
 
-  // ===============================
-  // Convert canvas → Base64 (tanpa header)
-  // ===============================
   const getBase64Image = () => {
     const canvas = canvasRef.current;
     const dataURL = canvas.toDataURL("image/png");
-    return dataURL.split(",")[1]; // ✅ buang header
+    return dataURL.split(",")[1];
   };
 
-  // ===============================
-  // Hantar imej ke backend
-  // ===============================
   const handleSubmit = async () => {
     if (!targetWord || targetWord.trim() === "") {
       alert("Sila masukkan perkataan sasaran.");
@@ -75,12 +64,10 @@ export default function Canvas({ targetWord, onResult }) {
     const imageData = getBase64Image();
 
     setLoading(true);
-
     const result = await verifyShorthand({
       targetWord,
       imageData,
     });
-
     setLoading(false);
 
     if (onResult) {
@@ -88,11 +75,8 @@ export default function Canvas({ targetWord, onResult }) {
     }
   };
 
-  // ===============================
-  // UI
-  // ===============================
   return (
-    <div className="canvas-container">
+    <div className="canvas-section">
       <canvas
         ref={canvasRef}
         onMouseDown={startDrawing}
@@ -100,6 +84,7 @@ export default function Canvas({ targetWord, onResult }) {
         onMouseUp={stopDrawing}
         onMouseLeave={stopDrawing}
         className="border rounded bg-white shadow"
+        style={{ touchAction: "none" }}
       />
 
       <div className="flex gap-3 mt-3">
