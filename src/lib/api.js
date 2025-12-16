@@ -5,7 +5,7 @@
 const API_BASE = "https://gurisan-trengkas-backend.onrender.com";
 
 // ===============================
-// Hantar shorthand untuk verifikasi
+// Verify tulisan pelajar
 // ===============================
 export async function verifyShorthand({ targetWord, imageData }) {
   try {
@@ -24,8 +24,26 @@ export async function verifyShorthand({ targetWord, imageData }) {
 
     return await response.json();
   } catch (error) {
-    console.error("Ralat API:", error);
+    console.error("Ralat API verifyShorthand:", error);
     return { error: "Tidak dapat berhubung dengan server" };
+  }
+}
+
+// ===============================
+// Dapatkan sejarah latihan pelajar
+// ===============================
+export async function getHistory(userId = "default_user") {
+  try {
+    const response = await fetch(`${API_BASE}/api/history/${userId}`);
+
+    if (!response.ok) {
+      throw new Error("Gagal menerima sejarah latihan");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Ralat API getHistory:", error);
+    return { error: "Tidak dapat mengambil sejarah latihan" };
   }
 }
 
