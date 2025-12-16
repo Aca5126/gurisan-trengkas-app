@@ -1,9 +1,0 @@
-{
-  "name": "Trengkas Pitman",
-  "short_name": "Trengkas",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#0e0f12",
-  "theme_color": "#48c78e",
-  "icons": []
-}
