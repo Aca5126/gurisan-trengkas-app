@@ -1,0 +1,46 @@
+name: Deploy Vite to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      - name: Build project
+        working-directory: frontend
+        run: npm run build
+
+      - name: Copy build output to docs folder
+        run: |
+          rm -rf docs
+          mkdir docs
+          cp -r frontend/dist/* docs/
+
+      - name: Commit and push docs folder
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add docs
+          git commit -m "Deploy to GitHub Pages" || echo "No changes to commit"
+          git push
