@@ -18,7 +18,6 @@ let erasing = false;
 let lastX = 0;
 let lastY = 0;
 let canvas, ctx, guidesCanvas, guidesCtx;
-let currentMode = 'bebas'; // 'bebas' | 'rawak' | 'ditetapkan'
 let speakerOn = true;
 
 let rekod = {
@@ -214,11 +213,6 @@ function attachDrawingEvents() {
 // =======================================
 // UTILITI UI & PRESTASI
 // =======================================
-
-function setMode(mode) {
-  currentMode = mode;
-  dlog('Mode ditukar kepada:', mode);
-}
 
 function bersihkanCanvas() {
   if (!ctx || !canvas) return;
@@ -532,12 +526,8 @@ function toggleSpeaker() {
 
 function initEvents() {
   dlog('initEvents() called');
+}
 
-  document.querySelectorAll('input[name="mode"]').forEach((radio) => {
-    radio.addEventListener('change', (e) => {
-      setMode(e.target.value);
-    });
-  });
 
   const penBtn = document.getElementById('penBtn');
   const padamBtn = document.getElementById('padamBtn');
@@ -677,11 +667,6 @@ document.addEventListener('click', (e) => {
 // =======================================
 // LOGIK MODE BAHARU (BEBAS / RAWAK / DITETAPKAN)
 // =======================================
-
-function getMode() {
-  const checked = document.querySelector("input[name='mode']:checked");
-  return checked ? checked.value : 'bebas';
-}
 
 function getPerkataan() {
   return inputBox ? inputBox.value.trim() : '';
