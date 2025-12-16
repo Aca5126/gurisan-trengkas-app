@@ -2,7 +2,6 @@
 // API Client untuk Backend Render
 // ===============================
 
-// ✅ URL backend Render Aca
 const API_BASE = "https://gurisan-trengkas-backend.onrender.com";
 
 // ===============================
@@ -13,7 +12,10 @@ export async function verifyShorthand({ targetWord, imageData }) {
     const response = await fetch(`${API_BASE}/api/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ targetWord, imageData }),
+      body: JSON.stringify({
+        expected_text: targetWord,
+        image_base64: imageData,
+      }),
     });
 
     if (!response.ok) {
@@ -32,7 +34,7 @@ export async function verifyShorthand({ targetWord, imageData }) {
 // ===============================
 export async function pingServer() {
   try {
-    const response = await fetch(`${API_BASE}/ping`);
+    const response = await fetch(`${API_BASE}/api/status`);
     return await response.json();
   } catch (error) {
     return { status: "offline" };
