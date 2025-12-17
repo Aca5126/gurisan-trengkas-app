@@ -1,68 +1,33 @@
-import { useEffect, useState } from "react";
-import { getHistory } from "../lib/api";
+import { useHistory } from "../hooks/useHistory";
+import { useVerify } from "../hooks/useVerify";
 
-export default function HistoryPanel({ userId = "default_user" }) {
-  const [history, setHistory] = useState(null);
-  const [loading, setLoading] = useState(false);
+export default function HistoryPanel() {
+  const { result } = useVerify();
+  const { record, status } = useHistory();
 
-  useEffect(() => {
-    const loadHistory = async () => {
-      setLoading(true);
-      const data = await getHistory(userId);
-      setLoading(false);
-      if (!data.error) {
-        setHistory(data.records || []);
-      } else {
-        setHistory([]);
-      }
-    };
+  function saveRecord() {
+    if (!result) return;
 
-    loadHistory();
-  }, [userId]);
+    record({
+      detected_text: result.detected_text,
+      accuracy: result.accuracy,
+      timestamp: new Date().toISOString(),
+    });
+  }
 
   return (
-    <div className="p-4 bg-white rounded shadow mt-4">
-      <h2 className="font-semibold mb-2">Rekod Latihan</h2>
+    <div className="p-4">
+      <button
+        onClick={saveRecord}
+        className="px-4 py-2 bg-green-600 text-white rounded"
+      >
+        Simpan Rekod
+      </button>
 
-      {loading && <p className="text-gray-500 text-sm">Memuatkan rekod...</p>}
-
-      {!loading && history && history.length === 0 && (
-        <p className="text-gray-500 text-sm">
-          Belum ada rekod latihan. Jom mula menulis gurisan pertama.
+      {status && (
+        <p className="mt-2 text-green-700">
+          Rekod berjaya disimpan.
         </p>
-      )}
-
-      {!loading && history && history.length > 0 && (
-        <div className="max-h-64 overflow-y-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-1">Sasaran</th>
-                <th className="text-left py-1">Dikesan</th>
-                <th className="text-right py-1">Ketepatan</th>
-                <th className="text-right py-1">Masa</th>
-              </tr>
-            </thead>
-            <tbody>
-              {history.map((item, idx) => (
-                <tr key={idx} className="border-b last:border-0">
-                  <td className="py-1">{item.expected_text}</td>
-                  <td className="py-1">{item.detected_text}</td>
-                  <td className="py-1 text-right">
-                    {item.accuracy != null
-                      ? `${item.accuracy.toFixed(1)}%`
-                      : "-"}
-                  </td>
-                  <td className="py-1 text-right text-gray-500">
-                    {item.timestamp
-                      ? new Date(item.timestamp).toLocaleString()
-                      : "-"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       )}
     </div>
   );
