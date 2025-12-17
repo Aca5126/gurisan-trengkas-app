@@ -1,21 +1,18 @@
 // ===============================
-// API Client untuk Backend Render
+// API Client untuk Backend Baru
 // ===============================
 
-const API_BASE = "https://gurisan-trengkas-backend.onrender.com";
+const API_BASE = import.meta.env.VITE_BACKEND_URL;
 
 // ===============================
 // Verify tulisan pelajar
 // ===============================
-export async function verifyShorthand({ targetWord, imageData }) {
+export async function verifyTrengkas(inputText) {
   try {
-    const response = await fetch(`${API_BASE}/api/verify`, {
+    const response = await fetch(`${API_BASE}/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        expected_text: targetWord,
-        image_base64: imageData,
-      }),
+      body: JSON.stringify({ input_text: inputText }),
     });
 
     if (!response.ok) {
@@ -24,26 +21,30 @@ export async function verifyShorthand({ targetWord, imageData }) {
 
     return await response.json();
   } catch (error) {
-    console.error("Ralat API verifyShorthand:", error);
+    console.error("Ralat API verifyTrengkas:", error);
     return { error: "Tidak dapat berhubung dengan server" };
   }
 }
 
 // ===============================
-// Dapatkan sejarah latihan pelajar
+// Simpan sejarah latihan pelajar
 // ===============================
-export async function getHistory(userId = "default_user") {
+export async function saveHistory(record) {
   try {
-    const response = await fetch(`${API_BASE}/api/history/${userId}`);
+    const response = await fetch(`${API_BASE}/history`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(record),
+    });
 
     if (!response.ok) {
-      throw new Error("Gagal menerima sejarah latihan");
+      throw new Error("Gagal menyimpan sejarah latihan");
     }
 
     return await response.json();
   } catch (error) {
-    console.error("Ralat API getHistory:", error);
-    return { error: "Tidak dapat mengambil sejarah latihan" };
+    console.error("Ralat API saveHistory:", error);
+    return { error: "Tidak dapat menyimpan sejarah latihan" };
   }
 }
 
@@ -52,7 +53,7 @@ export async function getHistory(userId = "default_user") {
 // ===============================
 export async function pingServer() {
   try {
-    const response = await fetch(`${API_BASE}/api/status`);
+    const response = await fetch(`${API_BASE}/status`);
     return await response.json();
   } catch (error) {
     return { status: "offline" };
