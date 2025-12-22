@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://<username>.github.io/gurisan-trengkas-app",
+  "homepage": "https://aca5126.github.io/gurisan-trengkas-app",
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.8",
