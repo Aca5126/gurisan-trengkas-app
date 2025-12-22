@@ -7,7 +7,6 @@ export default function HistoryPanel() {
 
   function saveRecord() {
     if (!result) return;
-    // If your canonical keys are result.word/detected/accuracy/feedback, mirror them here.
     record({
       detected_text: result.detected_text ?? result.detected,
       accuracy: result.accuracy,
@@ -16,16 +15,24 @@ export default function HistoryPanel() {
   }
 
   return (
-    <div className="p-6 border rounded-lg shadow bg-white">
-      <h3 className="text-xl font-semibold mb-4">Sejarah Latihan</h3>
+    <div className="p-6 border rounded-lg shadow-lg bg-white">
+      <h3 className="text-xl font-bold text-blue-700 mb-4">Rekod Prestasi</h3>
+      <p>Betul: 0</p>
+      <p>Salah: 0</p>
+      <p>Kadar Kejayaan: 0%</p>
+      <p>Purata Ketepatan: 0%</p>
+      <p>Tahap Kemahiran: Pemula</p>
+      <p className="mt-2 text-sm text-gray-600 italic">
+        Jangan putus asa! Latihan membawa kejayaan.
+      </p>
       <button
         onClick={saveRecord}
-        className="px-4 py-2 bg-green-600 text-white rounded"
+        className="mt-4 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded"
       >
         Simpan Rekod
       </button>
       {status && (
-        <p className="mt-2 text-green-700">Rekod berjaya disimpan.</p>
+        <p className="mt-2 text-green-600 font-semibold">Rekod berjaya disimpan.</p>
       )}
     </div>
   );
