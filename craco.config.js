@@ -6,6 +6,7 @@ module.exports = {
       "@": path.resolve(__dirname, "src"),
     },
     configure: (webpackConfig) => {
+      // Tambah fallback untuk modul Node jika perlu
       webpackConfig.resolve.fallback = {
         fs: false,
         path: false,
@@ -15,7 +16,9 @@ module.exports = {
   },
   babel: {
     plugins: [
-      "@babel/plugin-proposal-private-property-in-object",
+      ["@babel/plugin-proposal-private-property-in-object", { loose: true }],
+      ["@babel/plugin-transform-class-properties", { loose: true }],
+      ["@babel/plugin-transform-private-methods", { loose: true }],
     ],
   },
   style: {
