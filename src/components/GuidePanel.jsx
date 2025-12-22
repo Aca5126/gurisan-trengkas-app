@@ -8,24 +8,17 @@ export default function GuidePanel() {
       <h3 className="text-xl font-bold text-blue-700 mb-4">Panduan Trengkas</h3>
 
       <div className="flex gap-4 mb-4">
-        <button
-          onClick={() => setTab("gurisan")}
-          className={`px-3 py-1 rounded ${tab === "gurisan" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-        >
-          Gurisan
-        </button>
-        <button
-          onClick={() => setTab("vokal")}
-          className={`px-3 py-1 rounded ${tab === "vokal" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-        >
-          Vokal
-        </button>
-        <button
-          onClick={() => setTab("contoh")}
-          className={`px-3 py-1 rounded ${tab === "contoh" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-        >
-          Contoh
-        </button>
+        {["gurisan", "vokal", "contoh"].map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`px-3 py-1 rounded ${
+              tab === t ? "bg-blue-600 text-white" : "bg-gray-200"
+            }`}
+          >
+            {t.charAt(0).toUpperCase() + t.slice(1)}
+          </button>
+        ))}
       </div>
 
       {tab === "gurisan" && (
@@ -46,8 +39,16 @@ export default function GuidePanel() {
       )}
 
       {tab === "vokal" && (
-        <p className="text-gray-700">Panduan vokal akan ditambah di sini.</p>
+        <p className="text-gray-700">
+          Vokal diwakili dengan titik atau garis kecil: a, e, i, o, u.
+        </p>
       )}
 
       {tab === "contoh" && (
-        <p className="text-gray-700">Contoh penggunaan gurisan
+        <p className="text-gray-700">
+          Contoh: "buku" → gurisan b + vokal u + gurisan k + vokal u.
+        </p>
+      )}
+    </div>
+  );
+}
