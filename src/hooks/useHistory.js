@@ -27,4 +27,17 @@ export function useHistory() {
     ? Math.round(records.reduce((sum, r) => sum + r.accuracy, 0) / records.length)
     : 0;
 
-  let skillLevel
+  let skillLevel = "Pemula";
+  if (averageAccuracy > 90) skillLevel = "Mahir";
+  else if (averageAccuracy > 70) skillLevel = "Pertengahan";
+
+  const stats = {
+    correct: correctCount,
+    incorrect: incorrectCount,
+    successRate,
+    averageAccuracy,
+    skillLevel,
+  };
+
+  return { status, error, record, stats };
+}
