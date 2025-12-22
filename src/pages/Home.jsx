@@ -7,7 +7,6 @@ export default function Home() {
       <p className="mb-6 text-gray-700">
         Aplikasi latihan pengenalan tulisan trengkas untuk pelajar.
       </p>
-
       <Link
         to="/verify"
         className="px-6 py-3 bg-blue-600 text-white rounded shadow"
