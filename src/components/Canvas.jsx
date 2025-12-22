@@ -11,18 +11,18 @@ export default function Canvas() {
   }
 
   return (
-    <div className="p-4">
+    <div className="p-6 border rounded-lg shadow bg-white">
+      <h3 className="text-xl font-semibold mb-4">Latihan Trengkas</h3>
       <textarea
-        className="w-full p-2 border rounded"
+        className="w-full p-2 border rounded mb-3"
         placeholder="Tulis teks trengkas di sini..."
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
       />
-
       <button
         onClick={handleVerify}
         disabled={loading}
-        className="mt-3 px-4 py-2 bg-blue-600 text-white rounded"
+        className="px-4 py-2 bg-blue-600 text-white rounded"
       >
         {loading ? "Memproses..." : "Semak Tulisan"}
       </button>
