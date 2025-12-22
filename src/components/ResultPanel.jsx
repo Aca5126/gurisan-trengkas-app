@@ -9,7 +9,11 @@ export default function ResultPanel() {
       <h3 className="text-xl font-bold text-blue-700 mb-4">Keputusan Semakan</h3>
       {loading && <p className="text-gray-600">Sedang memproses...</p>}
       {error && <p className="text-red-600 font-semibold">{error}</p>}
-      {!result && <p className="text-gray-600">Tiada semakan lagi</p>}
+      {!result && (
+        <p className="text-gray-600">
+          Tiada semakan lagi. Masukkan perkataan dan lukis gurisan untuk semakan.
+        </p>
+      )}
       {result && <ResultCard result={result} />}
     </div>
   );
