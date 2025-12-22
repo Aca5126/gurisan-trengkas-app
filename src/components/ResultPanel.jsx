@@ -9,7 +9,8 @@ export default function ResultPanel() {
   if (!result) return <p className="p-4">Tiada keputusan lagi.</p>;
 
   return (
-    <div className="p-4">
+    <div className="p-6 border rounded-lg shadow bg-white">
+      <h3 className="text-xl font-semibold mb-4">Keputusan</h3>
       <ResultCard result={result} />
     </div>
   );
