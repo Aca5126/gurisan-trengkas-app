@@ -4,7 +4,7 @@ import Verify from "./pages/Verify";
 
 export default function App() {
   return (
-    <Router>
+    <Router basename="/gurisan-trengkas-app">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/verify" element={<Verify />} />
