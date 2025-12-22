@@ -12,8 +12,9 @@ export default function Canvas() {
 
   return (
     <div className="p-6 border rounded-lg shadow-lg bg-white">
-      <h3 className="text-xl font-bold text-blue-700 mb-4">Latihan Gurisan Trengkas</h3>
-      <p className="mb-2 text-gray-700">Belajar menulis gurisan trengkas dengan bimbingan AI</p>
+      <h3 className="text-xl font-bold text-blue-700 mb-2">Latihan Gurisan Trengkas</h3>
+      <p className="mb-4 text-gray-700">Belajar menulis gurisan trengkas dengan bimbingan AI</p>
+
       <label className="block mb-1 font-semibold">Perkataan Sasaran (Latihan)</label>
       <input
         type="text"
@@ -22,12 +23,15 @@ export default function Canvas() {
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
       />
+
       <p className="mb-2 text-sm text-gray-600">
-        Masukkan perkataan yang anda ingin guna, kemudian lukis gurisan trengkas di bawah.
+        Masukkan perkataan yang anda ingin guris, kemudian lukis gurisan trengkas di bawah.
       </p>
+
       <div className="h-40 border rounded mb-3 flex items-center justify-center text-gray-400">
         Lukis Gurisan (ruang lukisan simulasi)
       </div>
+
       <div className="flex gap-3">
         <button
           onClick={handleVerify}
