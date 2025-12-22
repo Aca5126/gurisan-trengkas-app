@@ -10,10 +10,7 @@ export default function ResultPanel() {
 
   return (
     <div className="p-4">
-      <ResultCard
-        detectedText={result.detected_text}
-        accuracy={result.accuracy}
-      />
+      <ResultCard result={result} />
     </div>
   );
 }
