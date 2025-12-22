@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useVerify } from "../hooks/useVerify";
+import DrawingCanvas from "./DrawingCanvas";
 
 export default function Canvas() {
   const [inputText, setInputText] = useState("");
@@ -28,11 +29,9 @@ export default function Canvas() {
         Masukkan perkataan yang anda ingin guris, kemudian lukis gurisan trengkas di bawah.
       </p>
 
-      <div className="h-40 border rounded mb-3 flex items-center justify-center text-gray-400">
-        Lukis Gurisan (ruang lukisan simulasi)
-      </div>
+      <DrawingCanvas />
 
-      <div className="flex gap-3">
+      <div className="flex gap-3 mt-3">
         <button
           onClick={handleVerify}
           disabled={loading}
